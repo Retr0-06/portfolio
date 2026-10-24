@@ -1,0 +1,118 @@
+<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>СТО Домкрат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600;700&display=swap">
+<style>
+/* Layout: workshop job card — price list as a service sheet, booking form as the work order */
+:root{
+  --bg:#EEF0F1; --card:#FFFFFF; --ink:#1E2328; --muted:#5E6870;
+  --amber:#E8A317; --amber-ink:#1E2328; --steel:#3A4A57; --line:#D3D8DC;
+  --display:"Unbounded", "Arial Black", sans-serif; --body:"Manrope", system-ui, sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#15191C; --card:#1E2429; --ink:#E6EAED; --muted:#9BA6AE;
+  --amber:#F0B43A; --amber-ink:#15191C; --steel:#8FA6B8; --line:#2E363D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15191C; --card:#1E2429; --ink:#E6EAED; --muted:#9BA6AE;
+  --amber:#F0B43A; --amber-ink:#15191C; --steel:#8FA6B8; --line:#2E363D; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px;flex-wrap:wrap}
+.logo{font:700 1.15rem var(--display);letter-spacing:.02em}
+.logo span{color:var(--amber)}
+.phone{font-weight:700;font-variant-numeric:tabular-nums}
+.btn{display:inline-block;background:var(--amber);color:var(--amber-ink);border:0;border-radius:8px;padding:13px 22px;font:700 1rem var(--body);text-decoration:none;cursor:pointer}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+.hero{padding-block:32px 48px}
+.hero h1{font:700 clamp(1.9rem,5.5vw,3.4rem)/1.1 var(--display);margin:0 0 16px;max-width:18ch;text-wrap:balance}
+.hero p{color:var(--muted);max-width:48ch;font-size:1.1rem;margin:0 0 24px}
+.facts{display:flex;flex-wrap:wrap;gap:24px;margin-top:32px}
+.facts div{border-left:4px solid var(--amber);padding-left:12px}
+.facts b{display:block;font:700 1.4rem var(--display)}
+.facts span{color:var(--muted);font-size:.9rem}
+section h2{font:700 clamp(1.3rem,3.5vw,1.9rem) var(--display);margin:0 0 20px}
+.prices .wrap,.book .wrap,.where .wrap{padding-block:44px}
+.sheet{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--line)}
+th{font:600 .75rem var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+td:last-child,th:last-child{text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.note{color:var(--muted);font-size:.9rem;margin-top:12px}
+.book{background:var(--steel);color:#fff}
+.book h2{color:#fff}
+.order{background:var(--card);color:var(--ink);border-radius:12px;padding:24px;display:grid;gap:14px;max-width:600px}
+.order label{display:grid;gap:6px;font-weight:600}
+.order input,.order select{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.done{margin:0;font-weight:700;color:var(--steel)}
+.where .grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+footer .wrap{padding-block:22px}
+@media (max-width:700px){.row,.where .grid{grid-template-columns:1fr}}
+</style>
+</head><body style="margin:0">
+
+<header><div class="wrap">
+  <div class="logo">ДОМКРАТ<span>.</span></div>
+  <div class="phone">+380 00 000 00 00</div>
+</div></header>
+
+<main>
+<section class="wrap hero">
+  <h1>Ремонт авто в Рівному без черги по телефону</h1>
+  <p>Обираєте послугу і час, ми підтверджуємо запис у Telegram за 10 хвилин. Ціну називаємо до початку роботи.</p>
+  <a class="btn" href="#book">Записатися на СТО</a>
+  <div class="facts">
+    <div><b>4</b><span>підйомники</span></div>
+    <div><b>12 років</b><span>на Боярці</span></div>
+    <div><b>6 міс.</b><span>гарантія на роботу</span></div>
+  </div>
+</section>
+
+<section class="prices"><div class="wrap">
+  <h2>Ціни на роботи</h2>
+  <div class="sheet"><table>
+    <tr><th>Послуга</th><th>Час</th><th>Від, грн</th></tr>
+    <tr><td>Заміна оливи та фільтра</td><td>30 хв</td><td>350</td></tr>
+    <tr><td>Розвал-сходження</td><td>40 хв</td><td>600</td></tr>
+    <tr><td>Діагностика ходової</td><td>30 хв</td><td>300</td></tr>
+    <tr><td>Заміна гальмівних колодок (вісь)</td><td>1 год</td><td>500</td></tr>
+    <tr><td>Комп'ютерна діагностика</td><td>20 хв</td><td>400</td></tr>
+  </table></div>
+  <p class="note">Ціна без запчастин. Свої запчастини можна привезти.</p>
+</div></section>
+
+<section class="book" id="book"><div class="wrap">
+  <h2>Запис на ремонт</h2>
+  <form class="order" id="order">
+    <label for="svc">Послуга
+      <select id="svc"><option>Заміна оливи та фільтра</option><option>Розвал-сходження</option><option>Діагностика ходової</option><option>Інше, опишу по телефону</option></select>
+    </label>
+    <div class="row">
+      <label for="car">Авто<input id="car" placeholder="Skoda Octavia, 2014"></label>
+      <label for="when">Коли зручно<select id="when"><option>Сьогодні</option><option>Завтра</option><option>Цього тижня</option></select></label>
+    </div>
+    <label for="tel">Телефон для Telegram або Viber<input id="tel" type="tel" required placeholder="+380"></label>
+    <button class="btn" type="submit">Записатися</button>
+    <p class="done" id="done" hidden>Заявку прийнято. Майстер напише вам протягом 10 хвилин.</p>
+  </form>
+</div></section>
+
+<section class="where"><div class="wrap grid">
+  <div><h2>Де ми</h2><p>Рівне, вул. Прикладна, 1<br>В'їзд з двору, біля шиномонтажу</p></div>
+  <div class="sheet"><table>
+    <tr><td>Пн – Пт</td><td>8:00 – 19:00</td></tr>
+    <tr><td>Субота</td><td>9:00 – 15:00</td></tr>
+    <tr><td>Неділя</td><td>вихідний</td></tr>
+  </table></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">Демо-сайт вигаданого СТО. Дизайн і розробка: Павло, Рівне.</div></footer>
+
+<script>
+document.getElementById('order').addEventListener('submit',e=>{e.preventDefault();document.getElementById('done').hidden=false;});
+</script>
+</body></html>

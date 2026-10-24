@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pavlo · Web Design</title>
+<meta name="description" content="One-page websites for small businesses, ready in 5 days. Лендинги для малого бізнесу за 5 днів.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap">
+<style>
+:root{--bg:#F2F4F3;--card:#FFFFFF;--ink:#17201D;--muted:#5A6762;--accent:#2F6F5E;--line:#D6DEDA;
+--display:"Bricolage Grotesque",system-ui,sans-serif;--body:"Figtree",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#111715;--card:#1A221F;--ink:#E4EBE8;--muted:#98A6A0;--accent:#6CC2A8;--line:#2A3430;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+main{max-width:860px;margin:0 auto;padding:48px max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px));display:grid;gap:40px}
+h1{font:800 clamp(2.2rem,7vw,3.6rem)/1.05 var(--display);margin:0;text-wrap:balance}
+.lead{color:var(--muted);font-size:1.15rem;max-width:52ch;margin:16px 0 0}
+.work{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.work a{display:grid;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;color:inherit;text-decoration:none}
+.work a:hover,.work a:focus-visible{border-color:var(--accent)}
+.work b{font:600 1.3rem var(--display)}
+.work span{color:var(--muted)}
+.work em{font-style:normal;color:var(--accent);font-weight:600}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.how h2{font:600 1.05rem var(--display);margin:0 0 4px}
+.how p{margin:0;color:var(--muted)}
+footer{color:var(--muted);border-top:1px solid var(--line);padding-top:20px}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Pavlo. Websites for small businesses, ready in 5 days.</h1>
+    <p class="lead">Bakeries, cafés, car services, salons and schools: your prices, hours, photos and an online booking or order form, built for phones first. Лендинги для малого бізнесу в Україні та Великій Британії.</p>
+  </header>
+
+  <section class="work">
+    <a href="bakery/"><b>Kiln Lane Bakery</b><span>Family bakery site with a next-day pre-order slip.</span><em>Open demo →</em></a>
+    <a href="sto/"><b>СТО «Домкрат»</b><span>Сайт СТО в Рівному з прайсом і онлайн-записом.</span><em>Відкрити демо →</em></a>
+  </section>
+
+  <section class="how">
+    <div><h2>1. Free first draft</h2><p>I sketch your homepage before you pay anything.</p></div>
+    <div><h2>2. Half upfront</h2><p>Work starts after a 50% deposit.</p></div>
+    <div><h2>3. Live in 5 days</h2><p>You pay the rest once you're happy with it.</p></div>
+  </section>
+
+  <footer>Pavlo · Web designer · Rivne, Ukraine<br>Demo sites show fictional businesses.</footer>
+</main>
+</body>
+</html>

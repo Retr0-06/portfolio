@@ -1,0 +1,131 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kiln Lane Bakery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column like a shop window card; enamel-blue bands for the bake list and order slip */
+:root{
+  --bg:#F4F6F8; --paper:#FFFFFF; --ink:#1B2430; --muted:#5B6675;
+  --enamel:#1F4FA3; --enamel-ink:#FFFFFF; --crust:#9A5B2A; --line:#D9DFE7;
+  --display:"Young Serif", Georgia, serif; --body:"Figtree", system-ui, sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161D; --paper:#18202A; --ink:#E8EDF3; --muted:#9AA6B5;
+  --enamel:#6E9BEA; --enamel-ink:#0D1420; --crust:#D9935C; --line:#2A3542; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161D; --paper:#18202A; --ink:#E8EDF3; --muted:#9AA6B5;
+  --enamel:#6E9BEA; --enamel-ink:#0D1420; --crust:#D9935C; --line:#2A3542; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:20px;flex-wrap:wrap}
+.logo{font-family:var(--display);font-size:1.4rem}
+.logo small{display:block;font:500 .7rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.btn{display:inline-block;background:var(--enamel);color:var(--enamel-ink);border:0;border-radius:999px;padding:12px 22px;font:600 1rem var(--body);text-decoration:none;cursor:pointer}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--crust);outline-offset:2px}
+.hero{padding-block:40px 56px;display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.05;margin:0 0 16px;text-wrap:balance}
+.hero p{color:var(--muted);max-width:42ch;margin:0 0 24px;font-size:1.1rem}
+.clock{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px}
+.clock h2{font:600 .75rem var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--crust);margin:0 0 12px}
+.clock ol{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.clock li{display:grid;grid-template-columns:64px 1fr;gap:12px;font-variant-numeric:tabular-nums}
+.clock b{font-family:var(--display);font-weight:400}
+.band{background:var(--enamel);color:var(--enamel-ink)}
+.band .wrap{padding-block:48px}
+.band h2,.order h2,.cakes h2,.find h2{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,4vw,2.3rem);margin:0 0 24px}
+.bake{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;background:color-mix(in srgb,var(--enamel-ink) 30%,transparent);border-radius:14px;overflow:hidden}
+.bake div{background:var(--enamel);padding:18px}
+.bake strong{display:block;font-family:var(--display);font-weight:400;font-size:1.2rem}
+.bake span{opacity:.85;font-size:.9rem}
+.bake em{font-style:normal;font-variant-numeric:tabular-nums;display:block;margin-top:8px;font-weight:600}
+.order .wrap,.cakes .wrap,.find .wrap{padding-block:56px}
+.slip{background:var(--paper);border:1px dashed var(--line);border-radius:16px;padding:24px;display:grid;gap:16px;max-width:560px}
+.slip label{display:grid;gap:6px;font-weight:500}
+.slip input,.slip select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.done{color:var(--crust);font-weight:600;margin:0}
+.cakes .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cakes .grid div{border-top:3px solid var(--crust);padding-top:12px}
+.cakes h3{font-family:var(--display);font-weight:400;margin:0 0 4px}
+.cakes p{margin:0;color:var(--muted)}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%;max-width:420px}
+td{padding:8px 0;border-bottom:1px solid var(--line)}
+td:last-child{text-align:right}
+.find .grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+footer .wrap{padding-block:24px}
+@media (max-width:720px){.hero,.find .grid,.cakes .grid,.row{grid-template-columns:1fr}}
+</style>
+</head><body style="margin:0">
+
+<header><div class="wrap">
+  <div class="logo">Kiln Lane Bakery<small>Family bakers · since 1978</small></div>
+  <a class="btn" href="#order">Pre-order for tomorrow</a>
+</div></header>
+
+<main>
+<section class="wrap hero">
+  <div>
+    <h1>Bread out of the oven at six. Yours by eight.</h1>
+    <p>Order by 4pm today and your loaf is set aside, still warm, when you walk in tomorrow. No queue, no sold-out shelf.</p>
+    <a class="btn" href="#order">Reserve a loaf</a>
+  </div>
+  <aside class="clock">
+    <h2>A day at Kiln Lane</h2>
+    <ol>
+      <li><b>04:30</b><span>Sourdough out of the proving baskets</span></li>
+      <li><b>06:00</b><span>First bake, white and wholemeal tins</span></li>
+      <li><b>07:30</b><span>Doors open, pre-orders on the counter</span></li>
+      <li><b>16:00</b><span>Last call for tomorrow's orders</span></li>
+    </ol>
+  </aside>
+</section>
+
+<section class="band"><div class="wrap">
+  <h2>Today's bake</h2>
+  <div class="bake">
+    <div><strong>Country sourdough</strong><span>800g, 36-hour ferment</span><em>£4.80</em></div>
+    <div><strong>Large white tin</strong><span>Sliced or whole</span><em>£2.40</em></div>
+    <div><strong>Seeded wholemeal</strong><span>Sunflower, pumpkin, linseed</span><em>£3.20</em></div>
+    <div><strong>Sausage roll</strong><span>Local pork, rough puff</span><em>£2.10</em></div>
+  </div>
+</div></section>
+
+<section class="order" id="order"><div class="wrap">
+  <h2>Pre-order slip</h2>
+  <form class="slip" id="slip">
+    <label for="item">What would you like?
+      <select id="item"><option>Country sourdough</option><option>Large white tin</option><option>Seeded wholemeal</option><option>Sausage rolls (box of 6)</option></select>
+    </label>
+    <div class="row">
+      <label for="qty">How many<input id="qty" type="number" min="1" value="2"></label>
+      <label for="day">Collect on<select id="day"><option>Tomorrow</option><option>Saturday</option></select></label>
+    </div>
+    <label for="name">Your name<input id="name" required placeholder="e.g. Sarah"></label>
+    <button class="btn" type="submit">Set it aside for me</button>
+    <p class="done" id="done" hidden>Done. Your order is on the counter list for collection.</p>
+  </form>
+</div></section>
+
+<section class="cakes"><div class="wrap">
+  <h2>Celebration cakes</h2>
+  <div class="grid">
+    <div><h3>Birthdays</h3><p>Sponge or chocolate, iced to your design. 5 days' notice.</p></div>
+    <div><h3>Weddings</h3><p>Tasting session at the bakery, tiers from three to five.</p></div>
+    <div><h3>Office trays</h3><p>Traybakes and pastries delivered within 5 miles.</p></div>
+  </div>
+</div></section>
+
+<section class="find"><div class="wrap grid">
+  <div><h2>Find us</h2><p>12 Kiln Lane, Market Town<br>Phone: 01234 567890</p></div>
+  <table><tr><td>Mon to Fri</td><td>7:30 – 16:00</td></tr><tr><td>Saturday</td><td>7:30 – 13:00</td></tr><tr><td>Sunday</td><td>Closed</td></tr></table>
+</div></section>
+</main>
+
+<footer><div class="wrap">Concept site for a fictional bakery. Designed and built by Pavlo, web designer.</div></footer>
+
+<script>
+document.getElementById('slip').addEventListener('submit',e=>{e.preventDefault();document.getElementById('done').hidden=false;});
+</script>
+</body></html>
