@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Онлайн-запис · Студія Лак</title>
+<meta name="description" content="Демо: онлайн-запис до майстра із заявкою в Telegram і Google Таблицю.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F4F0F2; --card:#FFFFFF; --ink:#2E1A2C; --muted:#76657A; --line:#E5DCE2; --accent:#D63F72; --accent-ink:#FFFFFF; --soft:#FBE7EF;
+  --display:"Tenor Sans",system-ui,sans-serif; --body:"Golos Text",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#1C1219; --card:#271A24; --ink:#F2E8EE; --muted:#B4A2B0; --line:#3A2A36; --accent:#F06A96; --accent-ink:#1C1219; --soft:#3A2130; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
+.demo{background:var(--ink);color:var(--bg);font-size:.9rem;padding:8px max(16px,env(safe-area-inset-left,0px))}
+.demo a{color:var(--bg);font-weight:600}
+.wrap{max-width:980px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 60px max(16px,env(safe-area-inset-left,0px))}
+header{display:flex;justify-content:space-between;align-items:center;padding:22px 0;gap:12px;flex-wrap:wrap}
+.logo{font:1.6rem var(--display);letter-spacing:.08em}
+header span{color:var(--muted);font-size:.92rem}
+h1{font:clamp(1.8rem,5.6vw,2.8rem)/1.1 var(--display);margin:12px 0 6px;letter-spacing:.01em}
+.sub{color:var(--muted);margin:0 0 26px}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start}
+h2{font:1.15rem var(--display);margin:0 0 12px;letter-spacing:.02em}
+.block{margin-bottom:28px}
+.services{display:grid;gap:8px}
+.svc,.master,.day,.slot{position:relative;cursor:pointer}
+.svc input,.master input,.day input,.slot input{position:absolute;opacity:0}
+.svc>span{display:grid;grid-template-columns:14px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.svc i{width:14px;height:20px;border-radius:7px 7px 4px 4px;display:block}
+.svc small{display:block;color:var(--muted)}
+.svc b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.masters{display:flex;gap:8px;flex-wrap:wrap}
+.master>span,.slot>span{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:500}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+.day{flex:0 0 auto;scroll-snap-align:start}
+.day>span{display:grid;justify-items:center;width:58px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 0}
+.day small{color:var(--muted);font-size:.8rem}
+.day b{font:1.3rem var(--display)}
+.day input:disabled+span{opacity:.35;cursor:not-allowed}
+.slots{display:flex;flex-wrap:wrap;gap:8px}
+.slot input:disabled+span{text-decoration:line-through;opacity:.4;cursor:not-allowed}
+input:checked+span{border-color:var(--accent)!important;background:var(--soft)!important;box-shadow:inset 0 0 0 1px var(--accent)}
+input:focus-visible+span,button:focus-visible,.form input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.empty{color:var(--muted);margin:0}
+.summary{position:sticky;top:16px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.summary dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0 0 18px}
+.summary dt{color:var(--muted)}
+.summary dd{margin:0;font-weight:500;text-align:right}
+.form{display:grid;gap:10px}
+.form label{display:grid;gap:4px;font-size:.92rem;font-weight:500}
+.form input,.form textarea{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.form textarea{min-height:64px;resize:vertical}
+.cta{border:0;border-radius:999px;background:var(--accent);color:var(--accent-ink);font:600 1rem var(--body);padding:14px;cursor:pointer}
+.cta:disabled{opacity:.45;cursor:not-allowed}
+.note{color:var(--muted);font-size:.85rem;margin:2px 0 0}
+.err{color:#C0392B;font-size:.9rem;margin:0}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}.summary{position:static}}
+</style>
+</head>
+<body>
+<div class="demo">Демо інструменту для сайту. Студія Лак — вигадана. <a href="../">Хочу такий запис</a></div>
+<div class="wrap">
+  <header><div class="logo">ЛАК</div><span>манікюр і педикюр, Рівне, вул. Соборна</span></header>
+  <h1>Запис онлайн за хвилину</h1>
+  <p class="sub">Оберіть послугу, майстра й вільний час. Адміністратор підтвердить запис у Telegram або дзвінком.</p>
+  <div class="grid">
+    <div>
+      <div class="block"><h2>Послуга</h2><div class="services" id="services"></div></div>
+      <div class="block"><h2>Майстер</h2><div class="masters" id="masters"></div></div>
+      <div class="block"><h2>День</h2><div class="days" id="days"></div></div>
+      <div class="block"><h2>Час</h2><div class="slots" id="slots"><p class="empty">Спершу оберіть послугу й день.</p></div></div>
+    </div>
+    <aside class="summary" aria-live="polite">
+      <h2>Ваш запис</h2>
+      <dl id="sum"></dl>
+      <form class="form" id="form" novalidate>
+        <label>Ім'я<input name="name" autocomplete="name" required></label>
+        <label>Телефон<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380" required></label>
+        <label>Побажання<textarea name="comment" placeholder="Дизайн, довжина, зняття старого покриття"></textarea></label>
+        <p class="err" id="err" hidden></p>
+        <button class="cta" id="cta" type="submit" disabled>Записатися</button>
+        <p class="note">Скасувати чи перенести можна за 3 години до візиту.</p>
+      </form>
+      <div id="sent"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+/* ===== Client config: services, masters and hours ===== */
+const CONFIG = {
+  business: 'Студія Лак',
+  currency: 'грн',
+  open: '09:00', close: '20:00', stepMin: 30,
+  closedWeekdays: [0],          // 0 = неділя
+  daysAhead: 14,
+  services: [
+    { v: 'Манікюр з покриттям', min: 120, price: 650, color: '#C23B5A' },
+    { v: 'Манікюр без покриття', min: 60, price: 350, color: '#E8C6CF' },
+    { v: 'Нарощування', min: 180, price: 1100, color: '#F2D7DF' },
+    { v: 'Педикюр з покриттям', min: 120, price: 750, color: '#7A2440' },
+    { v: 'Зняття + догляд', min: 45, price: 250, color: '#B9A3AE' }
+  ],
+  masters: ['Будь-який вільний', 'Олена', 'Ірина', 'Софія']
+};
+/* ====================================================== */
+
+const st = { svc: null, master: CONFIG.masters[0], day: null, time: null };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+const toTime = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+const wd = ['нд', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+
+$('services').innerHTML = CONFIG.services.map((s, i) => `<label class="svc"><input type="radio" name="svc" value="${i}">
+  <span><i style="background:${s.color}" aria-hidden="true"></i><span>${esc(s.v)}<small>${s.min >= 60 ? (s.min / 60).toLocaleString('uk-UA') + ' год' : s.min + ' хв'}</small></span><b>${s.price} ${CONFIG.currency}</b></span></label>`).join('');
+$('masters').innerHTML = CONFIG.masters.map((m, i) => `<label class="master"><input type="radio" name="master" value="${esc(m)}" ${i ? '' : 'checked'}><span>${esc(m)}</span></label>`).join('');
+
+const days = [];
+for (let d = 0; d < CONFIG.daysAhead; d++) { const x = new Date(); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() + d); days.push(x); }
+$('days').innerHTML = days.map((d, i) => {
+  const closed = CONFIG.closedWeekdays.includes(d.getDay());
+  return `<label class="day"><input type="radio" name="day" value="${i}" ${closed ? 'disabled' : ''} aria-label="${d.toLocaleDateString('uk-UA', { weekday: 'long', day: 'numeric', month: 'long' })}${closed ? ', вихідний' : ''}">
+  <span><small>${i === 0 ? 'сьогодні' : wd[d.getDay()]}</small><b>${d.getDate()}</b><small>${d.toLocaleDateString('uk-UA', { month: 'short' })}</small></span></label>`;
+}).join('');
+
+// Demo only: pretend some slots are taken. In a real setup busy slots come from the client's Google Sheet.
+function busy(dayIdx, m) { const h = (dayIdx * 7 + m / 30 * 3 + CONFIG.masters.indexOf(st.master) * 5) % 11; return h < 3; }
+
+function renderSlots() {
+  if (st.svc == null || st.day == null) return;
+  const s = CONFIG.services[st.svc];
+  const now = new Date(); const isToday = st.day === 0;
+  const nowMin = now.getHours() * 60 + now.getMinutes() + 60;
+  const out = [];
+  for (let m = toMin(CONFIG.open); m + s.min <= toMin(CONFIG.close); m += CONFIG.stepMin) {
+    const off = (isToday && m < nowMin) || busy(st.day, m);
+    out.push(`<label class="slot"><input type="radio" name="time" value="${toTime(m)}" ${off ? 'disabled' : ''} ${st.time === toTime(m) && !off ? 'checked' : ''}><span>${toTime(m)}</span></label>`);
+  }
+  const free = out.filter(x => !x.includes('disabled')).length;
+  $('slots').innerHTML = free ? out.join('') : '<p class="empty">На цей день вільного часу немає, оберіть інший.</p>';
+  if (st.time && !$('slots').querySelector(`input[value="${st.time}"]:not(:disabled)`)) st.time = null;
+}
+
+function renderSum() {
+  const s = st.svc != null ? CONFIG.services[st.svc] : null;
+  const d = st.day != null ? days[st.day] : null;
+  const rows = [
+    ['Послуга', s ? s.v : '—'], ['Майстер', st.master],
+    ['Коли', d ? d.toLocaleDateString('uk-UA', { weekday: 'short', day: 'numeric', month: 'long' }) + (st.time ? ', ' + st.time : '') : '—'],
+    ['Вартість', s ? s.price + ' ' + CONFIG.currency : '—']
+  ];
+  $('sum').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+  $('cta').disabled = !(s && d && st.time);
+}
+
+document.addEventListener('change', e => {
+  const n = e.target.name;
+  if (n === 'svc') st.svc = +e.target.value;
+  if (n === 'master') st.master = e.target.value;
+  if (n === 'day') st.day = +e.target.value;
+  if (n === 'time') st.time = e.target.value;
+  if (['svc', 'master', 'day'].includes(n)) renderSlots();
+  renderSum();
+});
+
+$('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const name = fd.get('name').trim(), phone = fd.get('phone').trim();
+  if (!name || phone.replace(/\D/g, '').length < 9) { $('err').hidden = false; $('err').textContent = 'Вкажіть ім\'я і телефон для підтвердження запису.'; return; }
+  $('err').hidden = true;
+  const s = CONFIG.services[st.svc], d = days[st.day];
+  await LeadKit.send('Онлайн-запис', {
+    "Ім'я": name, 'Телефон': phone, 'Послуга': s.v, 'Майстер': st.master,
+    'Дата': d.toLocaleDateString('uk-UA'), 'Час': st.time, 'Вартість': s.price + ' ' + CONFIG.currency,
+    'Побажання': fd.get('comment').trim()
+  }, $('sent'));
+  $('cta').textContent = 'Запис надіслано';
+  $('cta').disabled = true;
+});
+renderSum();
+</script>
+<script src="../kit/lead.js"></script>
+</body>
+</html>

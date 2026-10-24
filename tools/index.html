@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pavlo · Інструменти для сайту</title>
+<meta name="description" content="Калькулятор вартості, квіз і онлайн-запис для вашого сайту. Заявки в Telegram і Google Таблицю, без абонплати.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap">
+<style>
+:root{--bg:#F2F4F3;--card:#FFFFFF;--ink:#17201D;--muted:#5A6762;--accent:#2F6F5E;--line:#D6DEDA;
+--display:"Bricolage Grotesque",system-ui,sans-serif;--body:"Figtree",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#111715;--card:#1A221F;--ink:#E4EBE8;--muted:#98A6A0;--accent:#6CC2A8;--line:#2A3430;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+main{max-width:860px;margin:0 auto;padding:40px max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px));display:grid;gap:44px}
+.back{color:var(--muted);text-decoration:none;font-weight:600}
+h1{font:800 clamp(2rem,6.5vw,3.3rem)/1.06 var(--display);margin:14px 0 0;text-wrap:balance}
+.lead{color:var(--muted);font-size:1.12rem;max-width:56ch;margin:16px 0 0}
+.tools{display:grid;gap:16px}
+.tool{display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;color:inherit;text-decoration:none}
+.tool:hover,.tool:focus-visible{border-color:var(--accent)}
+.tool:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.tool b{font:600 1.35rem var(--display)}
+.tool p{grid-column:1;margin:0;color:var(--muted);max-width:52ch}
+.price{grid-column:2;grid-row:1/3;text-align:right;font-weight:600;white-space:nowrap}
+.price small{display:block;color:var(--muted);font-weight:400}
+.tool em{grid-column:1;font-style:normal;color:var(--accent);font-weight:600}
+h2{font:600 1.5rem var(--display);margin:0 0 14px}
+.gets{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 28px;margin:0;padding:0;list-style:none}
+.gets li{border-top:2px solid var(--accent);padding-top:10px}
+.gets b{display:block}
+.gets span{color:var(--muted)}
+ol.how{margin:0;padding-left:1.3em;display:grid;gap:10px}
+ol.how li::marker{font:800 1.1rem var(--display);color:var(--accent)}
+.uk{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.uk p{margin:0;color:var(--muted)}
+footer{color:var(--muted);border-top:1px solid var(--line);padding-top:20px}
+@media (max-width:560px){.tool{grid-template-columns:1fr}.price{grid-column:1;grid-row:auto;text-align:left}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <a class="back" href="../">Pavlo · веб-дизайн</a>
+    <h1>Інструменти, що приносять заявки з вашого сайту</h1>
+    <p class="lead">Калькулятор вартості, квіз або онлайн-запис для сайту, який у вас уже є. Клієнт бачить ціну одразу, а заявка за секунду приходить вам у Telegram і зберігається в Google Таблиці.</p>
+  </header>
+
+  <section class="tools" aria-label="Демо інструментів">
+    <a class="tool" href="calculator/"><b>Калькулятор вартості</b>
+      <span class="price">від 4 000 грн<small>£149 для UK</small></span>
+      <p>Клієнт обирає площу, тип і опції, бачить ціну й залишає заявку. Для прибирання, ремонту, вікон, меблів, кейтерингу.</p>
+      <em>Відкрити демо</em></a>
+    <a class="tool" href="quiz/"><b>Квіз з розрахунком</b>
+      <span class="price">від 3 500 грн<small>£129 для UK</small></span>
+      <p>5 простих питань, наприкінці орієнтовна ціна в обмін на контакт. Для дизайну інтер'єру, турів, весіль, курсів.</p>
+      <em>Відкрити демо</em></a>
+    <a class="tool" href="booking/"><b>Онлайн-запис</b>
+      <span class="price">від 3 000 грн<small>£99 для UK</small></span>
+      <p>Послуга, майстер, день і вільний час. Без платних сервісів і щомісячних підписок. Для салонів, барберів, тренерів, репетиторів.</p>
+      <em>Відкрити демо</em></a>
+  </section>
+
+  <section>
+    <h2>Що ви отримуєте</h2>
+    <ul class="gets">
+      <li><b>Заявки в Telegram</b><span>Миттєво, вам або в групу з адміністратором.</span></li>
+      <li><b>Таблиця всіх заявок</b><span>Google Таблиця зі статусами, яку видно з телефона.</span></li>
+      <li><b>Будь-який сайт</b><span>Tilda, WordPress, Wix, Horoshop, Prom: вставляю одним блоком коду.</span></li>
+      <li><b>Без абонплати</b><span>Платите один раз. 30 днів змінюю ціни й питання безкоштовно.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Як працюємо</h2>
+    <ol class="how">
+      <li>Роблю безкоштовне демо з вашими послугами й цінами за 1 день.</li>
+      <li>Подобається: 50% передоплати, ставлю на сайт і підключаю Telegram.</li>
+      <li>Разом надсилаємо тестову заявку, і ви оплачуєте решту.</li>
+    </ol>
+  </section>
+
+  <section class="uk" lang="en">
+    <p><strong>For UK businesses:</strong> I add a price calculator, quote quiz or booking form to the website you already have, with every enquiry sent to your phone and saved to a Google Sheet. One-off fee, no subscription. Free demo with your own prices first.</p>
+  </section>
+
+  <footer>Pavlo · Web designer · Rivne, Ukraine<br>Демо показують вигадані компанії.</footer>
+</main>
+</body>
+</html>

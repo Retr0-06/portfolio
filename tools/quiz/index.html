@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Квіз дизайн-проєкту · Кімната</title>
+<meta name="description" content="Демо: квіз, що рахує вартість дизайн-проєкту й збирає заявку в Telegram і Google Таблицю.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#E7E9E3; --card:#F6F6F2; --ink:#262622; --muted:#6B6A62; --line:#CFD2C8; --accent:#7A2E2E; --accent-ink:#F6F6F2;
+  --display:"Cormorant",Georgia,serif; --body:"Golos Text",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#1B1C19; --card:#252622; --ink:#ECEAE3; --muted:#A3A196; --line:#3A3B35; --accent:#D8877A; --accent-ink:#1B1C19; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+.demo{background:var(--ink);color:var(--bg);font-size:.9rem;padding:8px max(16px,env(safe-area-inset-left,0px))}
+.demo a{color:var(--bg);font-weight:600}
+.wrap{max-width:720px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px))}
+header{display:flex;justify-content:space-between;align-items:baseline;padding:22px 0 30px;gap:12px}
+.logo{font:600 1.7rem var(--display);letter-spacing:.01em}
+header span{color:var(--muted);font-size:.9rem}
+.progress{height:3px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:10px}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .35s ease}
+.count{color:var(--muted);font-size:.9rem;margin:0 0 6px}
+h1{font:500 clamp(2rem,6.4vw,3rem)/1.08 var(--display);margin:0 0 8px;text-wrap:balance}
+.hint{color:var(--muted);margin:0 0 24px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.opt{position:relative;cursor:pointer}
+.opt input{position:absolute;opacity:0}
+.opt>span{display:grid;gap:4px;height:100%;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:16px;transition:border-color .15s}
+.opt b{font-weight:600}
+.opt small{color:var(--muted)}
+.opt input:checked+span{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt input:focus-visible+span{outline:2px solid var(--accent);outline-offset:3px}
+/* Style swatches: stacked material planes — the quiz's signature */
+.sw{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:34px 22px;gap:3px;margin-bottom:8px;border-radius:2px;overflow:hidden}
+.sw i{display:block}
+.sw i:first-child{grid-row:1/3}
+.area{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:20px}
+.area output{display:block;font:500 3rem/1 var(--display);margin-bottom:12px;font-variant-numeric:lining-nums}
+.area input{width:100%;accent-color:var(--accent);height:28px}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:28px}
+button{font:600 1rem var(--body);border-radius:999px;padding:13px 22px;cursor:pointer}
+.next{background:var(--accent);color:var(--accent-ink);border:0}
+.next:disabled{opacity:.4;cursor:not-allowed}
+.back{background:transparent;border:1px solid var(--line);color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.result{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:24px;margin-bottom:22px}
+.range{font:500 clamp(2.2rem,8vw,3.4rem)/1.05 var(--display);margin:4px 0 6px}
+.result ul{margin:12px 0 0;padding-left:18px;color:var(--muted)}
+form{display:grid;gap:12px}
+form label{display:grid;gap:5px;font-weight:500}
+form input{font:inherit;padding:12px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink)}
+.ways{display:flex;gap:8px;flex-wrap:wrap}
+.ways label{display:inline-flex;align-items:center;gap:6px;font-weight:400;border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:var(--card);cursor:pointer}
+.err{color:#B4382C;margin:0;font-size:.92rem}
+.step{animation:in .3s ease-out}
+@keyframes in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.step{animation:none}.progress i{transition:none}}
+@media (max-width:460px){.opts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="demo">Демо інструменту для сайту. Кімната — вигадана студія. <a href="../">Хочу такий квіз</a></div>
+<div class="wrap">
+  <header><div class="logo">Кімната</div><span>дизайн інтер'єру, Львів</span></header>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+  <main id="app" aria-live="polite"></main>
+</div>
+
+<script>
+/* ===== Client config: questions, styles and prices ===== */
+const CONFIG = {
+  business: 'Кімната',
+  currency: 'грн',
+  ratePerM2: 900,          // повний дизайн-проєкт
+  bonus: 'Безкоштовний виїзд дизайнера на замір',
+  steps: [
+    { id: 'object', q: 'Що будемо проєктувати?', type: 'single', options: [
+      { v: 'Квартира', note: 'новобудова або вторинка', k: 1 },
+      { v: 'Будинок', note: 'кілька поверхів', k: 1.1 },
+      { v: 'Одна кімната', note: 'кухня, спальня, дитяча', k: 1.15 },
+      { v: 'Комерційне приміщення', note: 'кав\'ярня, офіс, салон', k: 1.25 } ] },
+    { id: 'area', q: 'Яка площа?', hint: 'Можна приблизно, уточнимо на замірі.', type: 'range', min: 15, max: 250, step: 5, value: 60 },
+    { id: 'style', q: 'Який настрій вам ближчий?', type: 'single', styles: true, options: [
+      { v: 'Сучасний мінімалізм', note: 'чисті лінії, мало деталей', sw: ['#E9E7E2', '#9A9890', '#2E2D2A'] },
+      { v: 'Japandi', note: 'дерево, льон, спокій', sw: ['#D9CBB4', '#8C6B4A', '#3E4A3D'] },
+      { v: 'Лофт', note: 'цегла, метал, бетон', sw: ['#8E4B35', '#6E6E6A', '#1F1F1E'] },
+      { v: 'Неокласика', note: 'ліпнина, симетрія', sw: ['#EDE6DA', '#B9A88B', '#4C5A6B'] },
+      { v: 'Сміливий колір', note: 'акценти й графіка', sw: ['#2F5D8C', '#E2B33C', '#C2543D'] },
+      { v: 'Ще не знаю', note: 'допоможемо обрати', sw: ['#CFD2C8', '#A9ACA2', '#7D8077'] } ] },
+    { id: 'scope', q: 'Що вам потрібно?', hint: 'Можна обрати кілька.', type: 'multi', options: [
+      { v: 'Планування й креслення', note: 'обмірний план, розстановка меблів', add: 0 },
+      { v: '3D-візуалізації', note: 'фотореалістичні кадри кімнат', add: 250 },
+      { v: 'Підбір і закупівля', note: 'меблі, світло, матеріали', add: 150 },
+      { v: 'Авторський нагляд', note: 'контроль під час ремонту', add: 200 } ] },
+    { id: 'when', q: 'Коли плануєте почати?', type: 'single', options: [
+      { v: 'Протягом місяця' }, { v: 'За 1–3 місяці' }, { v: 'Пізніше, поки дивлюся' }, { v: 'Ремонт уже йде' } ] }
+  ]
+};
+/* ======================================================= */
+
+const answers = { area: CONFIG.steps[1].value, scope: [] };
+let i = 0;
+const app = document.getElementById('app');
+const total = CONFIG.steps.length + 1;
+const fmt = n => (Math.round(n / 1000) * 1000).toLocaleString('uk-UA');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function estimate() {
+  const obj = CONFIG.steps[0].options.find(o => o.v === answers.object) || { k: 1 };
+  const adds = CONFIG.steps[3].options.filter(o => answers.scope.includes(o.v)).reduce((s, o) => s + o.add, 0);
+  const base = answers.area * (CONFIG.ratePerM2 + adds) * obj.k;
+  return [base * 0.9, base * 1.15];
+}
+
+function ready(s) {
+  if (s.type === 'single') return !!answers[s.id];
+  if (s.type === 'multi') return answers.scope.length > 0;
+  return true;
+}
+
+function render() {
+  document.getElementById('bar').style.width = (i / total * 100) + '%';
+  if (i >= CONFIG.steps.length) return renderResult();
+  const s = CONFIG.steps[i];
+  let body = '';
+  if (s.type === 'range') {
+    body = `<div class="area"><output id="aout">${answers.area} м²</output>
+      <input type="range" id="arange" min="${s.min}" max="${s.max}" step="${s.step}" value="${answers.area}" aria-label="Площа, м²"></div>`;
+  } else {
+    const multi = s.type === 'multi';
+    body = `<div class="opts" role="${multi ? 'group' : 'radiogroup'}" aria-label="${esc(s.q)}">` + s.options.map(o => {
+      const checked = multi ? answers.scope.includes(o.v) : answers[s.id] === o.v;
+      const sw = o.sw ? `<span class="sw" aria-hidden="true">${o.sw.map(c => `<i style="background:${c}"></i>`).join('')}</span>` : '';
+      return `<label class="opt"><input type="${multi ? 'checkbox' : 'radio'}" name="${s.id}" value="${esc(o.v)}" ${checked ? 'checked' : ''}>
+        <span>${sw}<b>${esc(o.v)}</b>${o.note ? `<small>${esc(o.note)}</small>` : ''}</span></label>`;
+    }).join('') + '</div>';
+  }
+  app.innerHTML = `<section class="step">
+    <p class="count">Питання ${i + 1} з ${CONFIG.steps.length}</p>
+    <h1>${esc(s.q)}</h1>${s.hint ? `<p class="hint">${esc(s.hint)}</p>` : '<p class="hint">Оберіть варіант, і ми підготуємо орієнтовну вартість.</p>'}
+    ${body}
+    <div class="nav">${i ? '<button class="back" type="button" id="back">Назад</button>' : '<span></span>'}
+      <button class="next" type="button" id="next" ${ready(s) ? '' : 'disabled'}>${i === CONFIG.steps.length - 1 ? 'Показати вартість' : 'Далі'}</button></div>
+  </section>`;
+  const r = document.getElementById('arange');
+  if (r) r.addEventListener('input', e => { answers.area = +e.target.value; document.getElementById('aout').textContent = answers.area + ' м²'; });
+  app.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(inp => inp.addEventListener('change', () => {
+    if (s.type === 'multi') answers.scope = [...app.querySelectorAll('input:checked')].map(x => x.value);
+    else answers[s.id] = inp.value;
+    document.getElementById('next').disabled = !ready(s);
+  }));
+  document.getElementById('next').onclick = () => { i++; render(); app.querySelector('h1')?.focus?.(); };
+  const b = document.getElementById('back'); if (b) b.onclick = () => { i--; render(); };
+}
+
+function renderResult() {
+  const [lo, hi] = estimate();
+  app.innerHTML = `<section class="step">
+    <p class="count">Готово</p>
+    <h1>Орієнтовна вартість вашого дизайн-проєкту</h1>
+    <div class="result">
+      <div class="range">${fmt(lo)}–${fmt(hi)} ${CONFIG.currency}</div>
+      <p class="hint" style="margin:0">${esc(answers.object)}, ${answers.area} м², стиль: ${esc(answers.style)}. Точну ціну назвемо після заміру.</p>
+      <ul><li>${esc(CONFIG.bonus)}</li><li>Добірка з 3 схожих реалізованих проєктів</li></ul>
+    </div>
+    <form id="form" novalidate>
+      <label>Ім'я<input name="name" autocomplete="name" required></label>
+      <label>Телефон<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380" required></label>
+      <div><p style="margin:0 0 6px;font-weight:500">Куди надіслати розрахунок</p>
+        <div class="ways"><label><input type="radio" name="via" value="Telegram" checked>Telegram</label>
+        <label><input type="radio" name="via" value="Viber">Viber</label><label><input type="radio" name="via" value="Дзвінок">Дзвінок</label></div></div>
+      <p class="err" id="err" hidden></p>
+      <div class="nav" style="margin-top:6px"><button class="back" type="button" id="back">Змінити відповіді</button>
+      <button class="next" type="submit">Отримати розрахунок</button></div>
+    </form>
+    <div id="sent"></div></section>`;
+  document.getElementById('back').onclick = () => { i = 0; render(); };
+  document.getElementById('form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const name = fd.get('name').trim(), phone = fd.get('phone').trim();
+    const err = document.getElementById('err');
+    if (!name || phone.replace(/\D/g, '').length < 9) { err.hidden = false; err.textContent = 'Вкажіть ім\'я і телефон, щоб дизайнер міг надіслати розрахунок.'; return; }
+    err.hidden = true;
+    await LeadKit.send('Квіз дизайн-проєкту', {
+      "Ім'я": name, 'Телефон': phone, 'Звʼязок': fd.get('via'),
+      'Обʼєкт': answers.object, 'Площа': answers.area + ' м²', 'Стиль': answers.style,
+      'Послуги': answers.scope.join(', '), 'Старт': answers.when, 'Оцінка': `${fmt(lo)}–${fmt(hi)} ${CONFIG.currency}`
+    }, document.getElementById('sent'));
+    e.target.querySelector('button[type=submit]').textContent = 'Заявку надіслано';
+    document.getElementById('bar').style.width = '100%';
+  });
+}
+render();
+</script>
+<script src="../kit/lead.js"></script>
+</body>
+</html>
