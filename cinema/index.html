@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Демо сайту кінотеатру: 3D-зала, вибір фільму, сеансу й місця.">
+<title>Кінотеатр КАДР</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+body{margin:0}
+[hidden]{display:none!important}
+/* Layout: full-bleed 3D hall on the left, a glass booking rail on the right; on phones the rail becomes a bottom sheet. Single deliberate dark look: a cinema with the lights down. */
+:root{
+  color-scheme: dark;
+  --bg:#0b090a;
+  --rail:rgba(19,15,16,.86);
+  --raise:rgba(255,240,228,.05);
+  --line:rgba(255,236,220,.11);
+  --fg:#f3ebe4;
+  --muted:#a69a92;
+  --brass:#dcb46a;
+  --brass-ink:#1b1408;
+  --velvet:#8f1b27;
+  --taken:#3a3133;
+  --display:'Prata', 'Times New Roman', Georgia, serif;
+  --body:'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --s-xs:12px; --s-sm:13px; --s-md:15px; --s-lg:20px; --s-xl:30px;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:var(--s-md);overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+.app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 392px}
+.stage{position:relative;min-width:0;min-height:0;overflow:hidden;background:#070506}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage canvas.dragging{cursor:grabbing}
+.stage canvas.pointing{cursor:pointer}
+
+/* Stage overlay */
+.now{position:absolute;left:max(20px, env(safe-area-inset-left,0px));top:18px;pointer-events:none;max-width:min(520px,70%)}
+.brand{display:flex;align-items:baseline;gap:10px;font-size:var(--s-xs);letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.brand b{font-family:var(--display);font-weight:400;font-size:18px;letter-spacing:.32em;color:var(--fg)}
+.now h1{font-family:var(--display);font-weight:400;font-size:clamp(24px,3.4vw,40px);line-height:1.1;margin:14px 0 6px;text-wrap:balance;text-shadow:0 2px 24px rgba(0,0,0,.6)}
+.now p{margin:0;color:var(--muted);font-size:var(--s-sm);font-variant-numeric:tabular-nums}
+
+.views{position:absolute;left:max(20px, env(safe-area-inset-left,0px));bottom:20px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.views button{background:rgba(14,11,12,.72);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:var(--s-sm);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.views button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.views button:disabled{opacity:.4;cursor:default}
+.hint{color:var(--muted);font-size:var(--s-xs);margin-left:6px;text-shadow:0 1px 8px #000}
+
+.caption{position:absolute;left:50%;bottom:72px;transform:translateX(-50%);background:rgba(14,11,12,.8);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:var(--s-sm);white-space:nowrap;pointer-events:none;transition:opacity .4s}
+.caption b{color:var(--brass);font-weight:500}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font-size:var(--s-xs);padding:5px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-140%);font-variant-numeric:tabular-nums}
+
+.loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);color:var(--muted);font-size:var(--s-sm);letter-spacing:.18em;text-transform:uppercase;transition:opacity .8s}
+.loading.gone{opacity:0;pointer-events:none}
+
+/* Booking rail */
+.rail{min-width:0;background:var(--rail);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.rail-scroll{overflow-y:auto;padding:22px max(20px, env(safe-area-inset-right,0px)) 18px 20px;display:flex;flex-direction:column;gap:24px;min-height:0;flex:1}
+.sec{min-width:0}
+.sec h2{margin:0 0 10px;font-size:var(--s-xs);font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.hall-meta{font-size:var(--s-sm);color:var(--muted);margin:0}
+.hall-meta span{color:var(--fg)}
+
+.films{display:flex;flex-direction:column;gap:6px}
+.film{display:grid;grid-template-columns:88px minmax(0,1fr);gap:12px;align-items:center;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:6px}
+.film:hover{background:var(--raise)}
+.film[aria-pressed="true"]{background:var(--raise);border-color:var(--line)}
+.film canvas{width:88px;height:50px;border-radius:5px;display:block}
+.film .t{font-family:var(--display);font-size:16px;line-height:1.25}
+.film .m{font-size:var(--s-xs);color:var(--muted);margin-top:3px}
+.film[aria-pressed="true"] .t{color:var(--brass)}
+
+.times{display:flex;flex-wrap:wrap;gap:6px}
+.times button{background:none;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-variant-numeric:tabular-nums;font-size:var(--s-sm)}
+.times button small{display:block;color:var(--muted);font-size:11px}
+.times button[aria-pressed="true"]{background:var(--brass);color:var(--brass-ink);border-color:var(--brass)}
+.times button[aria-pressed="true"] small{color:var(--brass-ink);opacity:.7}
+
+.map{display:flex;flex-direction:column;gap:4px;user-select:none}
+.screen-arc{height:22px;margin:0 18px 8px 22px;border-top:2px solid var(--brass);border-radius:50% 50% 0 0/100% 100% 0 0;text-align:center;font-size:10px;letter-spacing:.3em;color:var(--muted);padding-top:5px;opacity:.85}
+.mrow{display:grid;grid-template-columns:16px repeat(14,minmax(0,1fr)) 16px;gap:3px;align-items:center}
+.mrow .rn{font-size:10px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.mrow.tier-gap{margin-top:6px}
+.seat{aspect-ratio:1;border:0;border-radius:4px 4px 2px 2px;background:var(--velvet);padding:0;min-width:0}
+.seat:hover:not(:disabled){filter:brightness(1.35)}
+.seat:disabled{background:var(--taken);cursor:not-allowed}
+.seat[aria-pressed="true"]{background:var(--brass)}
+.seat.hot{outline:2px solid var(--fg);outline-offset:1px}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:var(--s-xs);color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.prices{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin-top:10px;font-size:var(--s-xs);color:var(--muted);font-variant-numeric:tabular-nums}
+.prices span:nth-child(even){color:var(--fg);text-align:right}
+
+.summary{border-top:1px solid var(--line);padding:14px max(20px, env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) 20px;display:flex;flex-direction:column;gap:10px;background:rgba(12,9,10,.6)}
+.picked{display:flex;flex-wrap:wrap;gap:6px;min-height:28px;align-items:center}
+.picked .empty{color:var(--muted);font-size:var(--s-sm)}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--raise);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 10px;font-size:var(--s-xs);font-variant-numeric:tabular-nums}
+.chip button{background:none;border:0;color:var(--muted);padding:0 4px;font-size:14px;line-height:1}
+.chip button:hover{color:var(--fg)}
+.cta{width:100%;border:0;border-radius:10px;background:var(--brass);color:var(--brass-ink);padding:13px 16px;font-weight:600;font-size:var(--s-md);font-variant-numeric:tabular-nums}
+.cta:disabled{background:var(--raise);color:var(--muted);cursor:default}
+
+/* Confirmation */
+.modal{position:fixed;inset:0;background:rgba(5,3,4,.72);display:grid;place-items:center;padding:20px;z-index:20;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ticket{width:min(380px,100%);background:#171213;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ticket .top{padding:22px 22px 18px}
+.ticket .eyebrow{font-size:var(--s-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--brass)}
+.ticket h3{font-family:var(--display);font-weight:400;font-size:24px;margin:8px 0 4px;text-wrap:balance}
+.ticket p{margin:0;color:var(--muted);font-size:var(--s-sm)}
+.ticket dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:16px 0 0;font-size:var(--s-sm);font-variant-numeric:tabular-nums}
+.ticket dt{color:var(--muted)}
+.ticket dd{margin:0;text-align:right}
+.perf{border-top:2px dashed var(--line);margin:0 12px}
+.ticket .bottom{padding:16px 22px 22px;display:flex;flex-direction:column;gap:12px}
+.code{font-family:var(--display);font-size:28px;letter-spacing:.14em;text-align:center}
+.note{font-size:var(--s-xs);color:var(--muted);text-align:center}
+
+@media (max-width: 820px){
+  .app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(240px,48%) minmax(0,1fr)}
+  .rail{border-left:0;border-top:1px solid var(--line)}
+  .rail-scroll{padding:16px max(16px, env(safe-area-inset-right,0px)) 14px max(16px, env(safe-area-inset-left,0px));gap:20px}
+  .summary{padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));flex-direction:row;align-items:center}
+  .summary .picked{flex:1;min-width:0;flex-wrap:nowrap;overflow-x:auto}
+  .summary .cta{width:auto;flex:none}
+  .now{left:16px;top:12px}
+  .now h1{margin-top:8px}
+  .views{left:16px;bottom:12px;right:16px}
+  .hint{display:none}
+  .caption{bottom:56px;font-size:var(--s-xs)}
+  .films{flex-direction:row;overflow-x:auto;gap:8px;padding-bottom:4px}
+  .film{grid-template-columns:1fr;flex:0 0 140px;align-items:start}
+  .film canvas{width:100%;height:auto;aspect-ratio:16/9}
+}
+@media (prefers-reduced-motion: reduce){ .caption,.loading{transition:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="stage" id="stage" aria-label="3D-модель кінозали">
+    <div class="now">
+      <div class="brand"><b>КАДР</b> кінотеатр</div>
+      <h1 id="nowTitle">Тиха гавань</h1>
+      <p id="nowMeta">Сьогодні · 18:30 · Зала 2</p>
+    </div>
+    <div class="caption" id="caption" hidden></div>
+    <div class="tip" id="tip" hidden></div>
+    <div class="views" role="group" aria-label="Ракурс камери">
+      <button id="vOverview" aria-pressed="true">Огляд зали</button>
+      <button id="vScreen" aria-pressed="false">Від екрана</button>
+      <button id="vSeat" aria-pressed="false" disabled>Вид з місця</button>
+      <span class="hint">Потягніть, щоб роззирнутися · клікніть на крісло</span>
+    </div>
+    <div class="loading" id="loading">Вмикаємо проєктор…</div>
+  </section>
+
+  <aside class="rail" aria-label="Бронювання">
+    <div class="rail-scroll">
+      <div class="sec">
+        <h2>Зала 2</h2>
+        <p class="hall-meta"><span>Dolby Atmos · Laser 4K</span> · 112 крісел · 8 рядів амфітеатром</p>
+      </div>
+      <div class="sec">
+        <h2>Сьогодні в залі</h2>
+        <div class="films" id="films"></div>
+      </div>
+      <div class="sec">
+        <h2>Сеанс</h2>
+        <div class="times" id="times"></div>
+      </div>
+      <div class="sec">
+        <h2>Оберіть місця</h2>
+        <div class="map" id="map"><div class="screen-arc">ЕКРАН</div></div>
+        <div class="legend">
+          <span><i style="background:var(--velvet)"></i>Вільне</span>
+          <span><i style="background:var(--taken)"></i>Зайняте</span>
+          <span><i style="background:var(--brass)"></i>Ваше</span>
+        </div>
+        <div class="prices">
+          <span>Ряди 1–2 · біля екрана</span><span>160 грн</span>
+          <span>Ряди 3–7 · центр зали</span><span>210 грн</span>
+          <span>Ряд 8 · ложа</span><span>290 грн</span>
+        </div>
+      </div>
+    </div>
+    <div class="summary">
+      <div class="picked" id="picked"><span class="empty">Місця не обрано</span></div>
+      <button class="cta" id="cta" disabled>Оберіть місце</button>
+    </div>
+  </aside>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="tTitle">
+  <div class="ticket">
+    <div class="top">
+      <div class="eyebrow">Бронь підтверджено</div>
+      <h3 id="tTitle"></h3>
+      <p id="tMeta"></p>
+      <dl id="tList"></dl>
+    </div>
+    <div class="perf"></div>
+    <div class="bottom">
+      <div class="code" id="tCode"></div>
+      <div class="note">Покажіть код на касі за 15 хвилин до сеансу.<br>Це демо: справжню бронь не створено.</div>
+      <button class="cta" id="tDone">Готово</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Data ---------- */
+const FILMS = [
+  {id:'harbor', title:'Тиха гавань', genre:'Драма', len:'1 год 58 хв', age:'12+', scene:'sea',
+   pal:{sky1:'#1d1030', sky2:'#e2683c', sun:'#ffd889', ground:'#140a12'}},
+  {id:'express', title:'Північний експрес', genre:'Трилер', len:'2 год 06 хв', age:'16+', scene:'train',
+   pal:{sky1:'#050d18', sky2:'#24597c', sun:'#e6f4ff', ground:'#04080d'}},
+  {id:'dunes', title:'Пісок і зорі', genre:'Пригоди', len:'2 год 21 хв', age:'12+', scene:'dunes',
+   pal:{sky1:'#24110a', sky2:'#d88a2e', sun:'#fff1c6', ground:'#3b1d0b'}},
+  {id:'dawn', title:'Сім хвилин до світанку', genre:'Мелодрама', len:'1 год 44 хв', age:'16+', scene:'city',
+   pal:{sky1:'#0e1830', sky2:'#b86a8c', sun:'#ffe3ee', ground:'#0a0e19'}}
+];
+const SESSIONS = [
+  {time:'12:40', fmt:'2D'}, {time:'15:10', fmt:'2D'}, {time:'18:30', fmt:'Atmos'}, {time:'21:15', fmt:'Atmos'}
+];
+const ROWS = 8, COLS = 14, MAX_PICK = 6;
+const rowY = r => 0.15 + r * 0.42;
+const rowZ = r => -5 + r * 1.25;
+const seatX = c => -6.5 + c;
+const priceOf = r => r < 2 ? 160 : (r < 7 ? 210 : 290);
+const seatLabel = i => `Ряд ${Math.floor(i / COLS) + 1} · Місце ${i % COLS + 1}`;
+
+const state = { film:0, session:2, taken:new Set(), picked:[], hover:-1, mode:'overview' };
+
+function hashStr(s){ let h = 2166136261; for (const ch of s){ h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function buildTaken(){
+  const rnd = rng(hashStr(FILMS[state.film].id + SESSIONS[state.session].time));
+  const busy = [0.22, 0.3, 0.42, 0.5][state.session];
+  state.taken = new Set();
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++){
+    const centre = 1 - Math.abs(c - 6.5) / 7, mid = 1 - Math.abs(r - 4.5) / 4.5;
+    if (rnd() < busy * (0.45 + 0.75 * centre * (0.5 + 0.5 * mid))) state.taken.add(r * COLS + c);
+  }
+}
+function hexA(hex, a){ const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+
+/* ---------- Screen "trailer" painter ---------- */
+const SW = 1024, SH = 436;
+function stars(ctx, seed, n, hz, t, a){
+  const r = rng(seed);
+  for (let i = 0; i < n; i++){
+    const x = r() * SW, y = r() * hz * 0.85, s = r() * 1.6 + 0.4, tw = 0.5 + 0.5 * Math.sin(t * (1 + r() * 2) + i);
+    ctx.fillStyle = `rgba(255,255,255,${a * (0.25 + 0.6 * tw)})`; ctx.fillRect(x, y, s, s);
+  }
+}
+function paintFilm(ctx, f, t){
+  const hz = SH * 0.64, p = f.pal;
+  let g = ctx.createLinearGradient(0, 0, 0, hz); g.addColorStop(0, p.sky1); g.addColorStop(1, p.sky2);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, SW, SH);
+  let sx = SW * 0.5 + Math.sin(t * 0.07) * 50, sy = hz - 40 + Math.sin(t * 0.05) * 10, sr = 46;
+  if (f.scene === 'train'){ sx = SW * 0.74; sy = hz * 0.32; sr = 30; stars(ctx, 7, 160, hz, t, 1); }
+  if (f.scene === 'dunes'){ sy = hz * 0.36 + Math.sin(t * 0.04) * 8; sr = 34; stars(ctx, 11, 70, hz, t, 0.5); }
+  if (f.scene === 'city'){ sy = hz - 10 - (t * 1.2 % 60); }
+  const rg = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 6);
+  rg.addColorStop(0, hexA(p.sun, 0.9)); rg.addColorStop(0.16, hexA(p.sun, 0.45)); rg.addColorStop(1, hexA(p.sun, 0));
+  ctx.fillStyle = rg; ctx.fillRect(0, 0, SW, SH);
+  ctx.fillStyle = p.sun; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+
+  if (f.scene === 'sea'){
+    g = ctx.createLinearGradient(0, hz, 0, SH); g.addColorStop(0, hexA(p.sky2, 0.85)); g.addColorStop(1, p.ground);
+    ctx.fillStyle = g; ctx.fillRect(0, hz, SW, SH - hz);
+    for (let k = 0; k < 34; k++){
+      const y = hz + 3 + k * k * 0.14, w = (160 - k * 3) * (0.6 + 0.4 * Math.sin(t * 1.3 + k * 1.7));
+      ctx.fillStyle = hexA(p.sun, Math.max(0, 0.75 - k * 0.022));
+      ctx.fillRect(sx - w / 2 + Math.sin(t + k) * 14, y, w, 2 + k * 0.08);
+    }
+    const bx = (t * 9) % (SW + 200) - 100;
+    ctx.fillStyle = p.ground; ctx.beginPath();
+    ctx.moveTo(bx - 26, hz + 14); ctx.lineTo(bx + 26, hz + 14); ctx.lineTo(bx + 18, hz + 22); ctx.lineTo(bx - 18, hz + 22); ctx.fill();
+    ctx.fillRect(bx - 1, hz - 22, 2, 36);
+    ctx.beginPath(); ctx.moveTo(bx + 1, hz - 20); ctx.lineTo(bx + 20, hz + 10); ctx.lineTo(bx + 1, hz + 10); ctx.fill();
+  }
+  if (f.scene === 'train'){
+    ctx.fillStyle = '#0a1622'; ctx.beginPath(); ctx.moveTo(0, hz);
+    for (let x = 0; x <= SW; x += 32) ctx.lineTo(x, hz - 60 - 50 * Math.abs(Math.sin(x * 0.006 + 1)) - 20 * Math.sin(x * 0.03));
+    ctx.lineTo(SW, SH); ctx.lineTo(0, SH); ctx.fill();
+    ctx.fillStyle = p.ground; ctx.fillRect(0, hz + 20, SW, SH);
+    const tx = (t * 70) % (SW + 900) - 900;
+    for (let car = 0; car < 6; car++){
+      const cx = tx + car * 150;
+      ctx.fillStyle = '#02050a'; ctx.fillRect(cx, hz - 4, 140, 26);
+      for (let w = 0; w < 7; w++){ ctx.fillStyle = (car * 7 + w) % 5 ? 'rgba(255,214,140,.9)' : 'rgba(255,214,140,.25)'; ctx.fillRect(cx + 8 + w * 18, hz + 2, 11, 8); }
+    }
+    ctx.fillStyle = 'rgba(255,240,200,.18)'; ctx.beginPath(); ctx.moveTo(tx + 900, hz + 6); ctx.lineTo(tx + 1200, hz - 20); ctx.lineTo(tx + 1200, hz + 40); ctx.fill();
+  }
+  if (f.scene === 'dunes'){
+    const layers = ['#a85a22', '#7a3c17', '#552810', p.ground];
+    layers.forEach((col, i) => {
+      ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, SH);
+      const base = hz - 10 + i * 38, amp = 26 - i * 3;
+      for (let x = 0; x <= SW; x += 16) ctx.lineTo(x, base + amp * Math.sin(x * (0.006 + i * 0.002) + i * 2 + t * 0.03 * (i + 1)));
+      ctx.lineTo(SW, SH); ctx.fill();
+    });
+    const cx = 300 + (t * 6) % 500;
+    ctx.fillStyle = '#1d0c04';
+    for (let k = 0; k < 3; k++){ const x = cx + k * 26, y = hz + 40 + 26 * Math.sin(x * 0.012 + 3 + t * 0.06); ctx.fillRect(x, y - 12, 14, 8); ctx.fillRect(x + 10, y - 18, 4, 8); ctx.fillRect(x + 2, y - 4, 2, 7); ctx.fillRect(x + 10, y - 4, 2, 7); }
+  }
+  if (f.scene === 'city'){
+    ctx.fillStyle = p.ground; ctx.fillRect(0, hz, SW, SH);
+    const r = rng(42);
+    let x = 0;
+    while (x < SW){
+      const w = 30 + r() * 60, h = 40 + r() * 150;
+      ctx.fillStyle = '#0c1222'; ctx.fillRect(x, hz - h, w - 3, h);
+      for (let wy = hz - h + 8; wy < hz - 6; wy += 12) for (let wx = x + 5; wx < x + w - 10; wx += 9){
+        const on = Math.sin(wx * 12.9 + wy * 78.2 + Math.floor(t * 0.4 + wx) * 0.7) > 0.55;
+        if (on){ ctx.fillStyle = 'rgba(255,214,170,.75)'; ctx.fillRect(wx, wy, 4, 5); }
+      }
+      x += w;
+    }
+  }
+  const v = ctx.createRadialGradient(SW / 2, SH / 2, SH * 0.3, SW / 2, SH / 2, SW * 0.65);
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.6)');
+  ctx.fillStyle = v; ctx.fillRect(0, 0, SW, SH);
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, 22); ctx.fillRect(0, SH - 22, SW, 22);
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = 'rgba(255,255,255,.62)'; ctx.font = '500 13px "Golos Text", system-ui, sans-serif';
+  ctx.fillText('ТРЕЙЛЕР  ·  ' + f.genre.toUpperCase() + '  ·  ' + f.age, 52, SH - 98);
+  ctx.fillStyle = '#fff'; ctx.font = '46px Prata, Georgia, serif';
+  ctx.fillText(f.title, 50, SH - 50);
+}
+
+/* ---------- Rail UI ---------- */
+function buildFilms(){
+  const box = $('films');
+  const off = document.createElement('canvas'); off.width = SW; off.height = SH;
+  const octx = off.getContext('2d');
+  FILMS.forEach((f, i) => {
+    const b = document.createElement('button'); b.className = 'film'; b.type = 'button';
+    b.setAttribute('aria-pressed', i === state.film);
+    const c = document.createElement('canvas'); c.width = 176; c.height = 100;
+    paintFilm(octx, f, 14); c.getContext('2d').drawImage(off, 140, 0, SH * 176 / 100, SH, 0, 0, 176, 100);
+    const txt = document.createElement('div');
+    txt.innerHTML = `<div class="t"></div><div class="m"></div>`;
+    txt.querySelector('.t').textContent = f.title;
+    txt.querySelector('.m').textContent = `${f.genre} · ${f.len} · ${f.age}`;
+    b.append(c, txt);
+    b.addEventListener('click', () => selectFilm(i));
+    box.append(b);
+  });
+}
+function buildTimes(){
+  const box = $('times'); box.innerHTML = '';
+  SESSIONS.forEach((s, i) => {
+    const b = document.createElement('button'); b.type = 'button';
+    b.setAttribute('aria-pressed', i === state.session);
+    b.innerHTML = `${s.time}<small>${s.fmt}</small>`;
+    b.addEventListener('click', () => { state.session = i; state.picked = []; buildTaken(); buildTimes(); refreshAll(); });
+    box.append(b);
+  });
+}
+function buildMap(){
+  const map = $('map');
+  for (let r = 0; r < ROWS; r++){
+    const row = document.createElement('div'); row.className = 'mrow' + (r === 2 || r === 7 ? ' tier-gap' : '');
+    const rn = () => { const s = document.createElement('span'); s.className = 'rn'; s.textContent = r + 1; return s; };
+    row.append(rn());
+    for (let c = 0; c < COLS; c++){
+      const i = r * COLS + c, b = document.createElement('button');
+      b.type = 'button'; b.className = 'seat'; b.dataset.i = i;
+      b.addEventListener('click', () => togglePick(i));
+      b.addEventListener('mouseenter', () => setHover(i));
+      b.addEventListener('mouseleave', () => setHover(-1));
+      row.append(b);
+    }
+    row.append(rn());
+    map.append(row);
+  }
+}
+function refreshMap(){
+  document.querySelectorAll('.seat').forEach(b => {
+    const i = +b.dataset.i, taken = state.taken.has(i), mine = state.picked.includes(i);
+    b.disabled = taken; b.setAttribute('aria-pressed', mine);
+    b.classList.toggle('hot', i === state.hover);
+    b.setAttribute('aria-label', `${seatLabel(i)}, ${priceOf(Math.floor(i / COLS))} грн, ${taken ? 'зайняте' : mine ? 'обране' : 'вільне'}`);
+  });
+}
+function refreshSummary(){
+  const box = $('picked'); box.innerHTML = '';
+  if (!state.picked.length){ box.innerHTML = '<span class="empty">Місця не обрано</span>'; }
+  state.picked.forEach(i => {
+    const chip = document.createElement('span'); chip.className = 'chip';
+    chip.textContent = `${Math.floor(i / COLS) + 1} ряд · ${i % COLS + 1}`;
+    const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Прибрати ' + seatLabel(i));
+    x.addEventListener('click', () => togglePick(i));
+    chip.append(x); box.append(chip);
+  });
+  const total = state.picked.reduce((s, i) => s + priceOf(Math.floor(i / COLS)), 0);
+  const cta = $('cta');
+  cta.disabled = !state.picked.length;
+  cta.textContent = state.picked.length ? `Забронювати · ${total} грн` : 'Оберіть місце';
+  $('vSeat').disabled = !state.picked.length;
+}
+function refreshHeader(){
+  const f = FILMS[state.film], s = SESSIONS[state.session];
+  $('nowTitle').textContent = f.title;
+  $('nowMeta').textContent = `Сьогодні · ${s.time} · Зала 2 · ${f.len}`;
+  document.querySelectorAll('.film').forEach((b, i) => b.setAttribute('aria-pressed', i === state.film));
+}
+function refreshAll(){ refreshHeader(); refreshMap(); refreshSummary(); if (three) three.paintSeats(); }
+
+function selectFilm(i){
+  if (i === state.film) return;
+  if (three) three.crossfade(state.film);
+  state.film = i; state.picked = []; buildTaken(); refreshAll();
+}
+function togglePick(i){
+  if (state.taken.has(i)) return;
+  const k = state.picked.indexOf(i);
+  if (k >= 0){ state.picked.splice(k, 1); if (three && state.mode === 'seat'){ if (state.picked.length) three.toSeat(state.picked[state.picked.length - 1]); else three.toView('overview'); } }
+  else {
+    if (state.picked.length >= MAX_PICK) state.picked.shift();
+    state.picked.push(i);
+    if (three) three.toSeat(i);
+  }
+  refreshMap(); refreshSummary(); if (three) three.paintSeats();
+}
+function setHover(i){ if (state.hover === i) return; state.hover = i; refreshMap(); if (three) three.paintSeats(); }
+
+$('cta').addEventListener('click', () => {
+  const f = FILMS[state.film], s = SESSIONS[state.session];
+  $('tTitle').textContent = f.title;
+  $('tMeta').textContent = `Сьогодні, ${s.time} · Зала 2 · ${s.fmt}`;
+  const dl = $('tList'); dl.innerHTML = '';
+  [...state.picked].sort((a, b) => a - b).forEach(i => {
+    const dt = document.createElement('dt'); dt.textContent = seatLabel(i);
+    const dd = document.createElement('dd'); dd.textContent = priceOf(Math.floor(i / COLS)) + ' грн';
+    dl.append(dt, dd);
+  });
+  const total = state.picked.reduce((a, i) => a + priceOf(Math.floor(i / COLS)), 0);
+  const dt = document.createElement('dt'); dt.textContent = 'Разом'; dt.style.color = 'var(--fg)';
+  const dd = document.createElement('dd'); dd.textContent = total + ' грн'; dd.style.fontWeight = '600';
+  dl.append(dt, dd);
+  $('tCode').textContent = 'KD-' + (1000 + Math.floor(Math.random() * 9000));
+  $('modal').hidden = false; $('tDone').focus();
+});
+$('tDone').addEventListener('click', () => {
+  state.picked.forEach(i => state.taken.add(i)); state.picked = [];
+  $('modal').hidden = true; if (three) three.toView('overview'); refreshAll();
+});
+
+/* ---------- 3D hall ---------- */
+let three = null;
+function initThree(){
+  if (!window.THREE) throw new Error('no three');
+  const T = THREE, V3 = T.Vector3;
+  const stage = $('stage');
+  const renderer = new T.WebGLRenderer({ antialias:true, powerPreference:'high-performance' });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  stage.prepend(renderer.domElement);
+  const scene = new T.Scene();
+  scene.background = new T.Color(0x060405);
+  scene.fog = new T.Fog(0x060405, 22, 46);
+  const camera = new T.PerspectiveCamera(55, 1, 0.05, 120);
+
+  const mat = (c, o = {}) => new T.MeshStandardMaterial(Object.assign({ color:c, roughness:0.85, metalness:0.05 }, o));
+  const glow = c => new T.MeshBasicMaterial({ color:c });
+  const box = (w, h, d, m, x, y, z) => { const b = new T.Mesh(new T.BoxGeometry(w, h, d), m); b.position.set(x, y, z); scene.add(b); return b; };
+
+  const W = 20, FRONT = -13, BACK = 6, H = 10;
+  const carpet = mat(0x1a1113), wall = mat(0x1b1617), slatM = mat(0x2b201c, { roughness:0.7 }), dark = mat(0x0c0a0a);
+  const led = glow(0xffb36b), ledDim = glow(0x7a4a25);
+
+  // floor + stepped rows
+  box(W, 0.1, 8, carpet, 0, -0.05, -9);
+  for (let r = 0; r < ROWS; r++){
+    const y = rowY(r), z = rowZ(r);
+    box(W, y, 1.25, carpet, 0, y / 2, z);
+    box(W, 0.025, 0.025, r % 2 ? ledDim : ledDim, 0, y - 0.02, z - 0.63);
+    [-8.6, 8.6].forEach(x => box(1.2, 0.03, 0.03, led, x, y - 0.03, z - 0.62));
+  }
+  const ly = rowY(ROWS - 1), lz = rowZ(ROWS - 1) + 0.62;
+  box(W, ly, BACK - lz, carpet, 0, ly / 2, (lz + BACK) / 2);
+
+  // walls, ceiling
+  [-1, 1].forEach(s => { const m = new T.Mesh(new T.PlaneGeometry(BACK - FRONT, H), wall); m.position.set(s * W / 2, H / 2, (FRONT + BACK) / 2); m.rotation.y = -s * Math.PI / 2; scene.add(m); });
+  const ceil = new T.Mesh(new T.PlaneGeometry(W, BACK - FRONT), dark); ceil.position.set(0, H, (FRONT + BACK) / 2); ceil.rotation.x = Math.PI / 2; scene.add(ceil);
+  const front = new T.Mesh(new T.PlaneGeometry(W, H), mat(0x0d0b0b)); front.position.set(0, H / 2, FRONT); scene.add(front);
+  const back = new T.Mesh(new T.PlaneGeometry(W, H), wall); back.position.set(0, H / 2, BACK); back.rotation.y = Math.PI; scene.add(back);
+
+  // acoustic slats with light gaps
+  const slatGeo = new T.BoxGeometry(0.16, 7.2, 0.32);
+  const slatN = 2 * Math.floor((BACK - FRONT - 1) / 0.55);
+  const slats = new T.InstancedMesh(slatGeo, slatM, slatN);
+  const dummy = new T.Object3D(); let si = 0;
+  [-1, 1].forEach(s => { for (let z = FRONT + 0.8; z < BACK - 0.3 && si < slatN; z += 0.55){ dummy.position.set(s * (W / 2 - 0.12), 5.4, z); dummy.rotation.set(0, 0, 0); dummy.updateMatrix(); slats.setMatrixAt(si++, dummy.matrix); } });
+  slats.count = si; scene.add(slats);
+  [-1, 1].forEach(s => { for (let z = -10; z < 5; z += 3.3){ box(0.04, 6.4, 0.05, led, s * (W / 2 - 0.03), 5.4, z); } });
+
+  // ceiling light lines, slightly converging toward the screen
+  for (let k = -3; k <= 3; k++){
+    const strip = box(0.05, 0.03, 17, glow(k === 0 ? 0xffd2a0 : 0xd79a62), k * 2.4, H - 0.05, -3.5);
+    strip.rotation.y = k * 0.025;
+  }
+
+  // screen, frame, stage, speakers
+  const scr = document.createElement('canvas'); scr.width = SW; scr.height = SH;
+  const sctx = scr.getContext('2d');
+  const prev = document.createElement('canvas'); prev.width = SW; prev.height = SH;
+  const pctx = prev.getContext('2d');
+  const tex = new T.CanvasTexture(scr); tex.anisotropy = 4;
+  const SCRW = 15, SCRH = SCRW * SH / SW, SCRY = 1.6 + SCRH / 2;
+  box(SCRW + 0.6, SCRH + 0.6, 0.15, dark, 0, SCRY, FRONT + 0.08);
+  const screen = new T.Mesh(new T.PlaneGeometry(SCRW, SCRH), new T.MeshBasicMaterial({ map:tex, toneMapped:false }));
+  screen.position.set(0, SCRY, FRONT + 0.17); scene.add(screen);
+  box(17.5, 0.55, 1.8, mat(0x141011), 0, 0.27, FRONT + 0.9);
+  box(17.5, 0.03, 0.03, led, 0, 0.53, FRONT + 1.8);
+  [-1, 1].forEach(s => { box(1.1, 2.2, 0.6, dark, s * 9, 3.4, FRONT + 0.4); box(1.1, 2.2, 0.6, dark, s * 9, 6.1, FRONT + 0.4); });
+
+  // projector booth + beam + dust
+  box(1.6, 0.6, 0.05, glow(0x6a5848), 0, 8.6, BACK - 0.03);
+  const apex = new V3(0, 8.6, BACK - 0.1);
+  const corners = [[-SCRW/2, SCRY-SCRH/2], [SCRW/2, SCRY-SCRH/2], [SCRW/2, SCRY+SCRH/2], [-SCRW/2, SCRY+SCRH/2]].map(([x, y]) => new V3(x, y, FRONT + 0.2));
+  const bpos = [], bcol = [];
+  for (let k = 0; k < 4; k++){ const a = corners[k], b = corners[(k + 1) % 4]; bpos.push(apex.x, apex.y, apex.z, a.x, a.y, a.z, b.x, b.y, b.z); bcol.push(1, 1, 1, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12); }
+  const bgeo = new T.BufferGeometry();
+  bgeo.setAttribute('position', new T.Float32BufferAttribute(bpos, 3));
+  bgeo.setAttribute('color', new T.Float32BufferAttribute(bcol, 3));
+  const beamMat = new T.MeshBasicMaterial({ vertexColors:true, transparent:true, opacity:0.07, blending:T.AdditiveBlending, depthWrite:false, side:T.DoubleSide, fog:false });
+  const beam = new T.Mesh(bgeo, beamMat); scene.add(beam);
+  const DN = 500, dpos = new Float32Array(DN * 3), dseed = [];
+  const dr = rng(5);
+  for (let i = 0; i < DN; i++){
+    const tt = 0.08 + dr() * 0.9, u = dr(), v = dr();
+    const base = new V3().lerpVectors(corners[0], corners[1], u).lerp(new V3().lerpVectors(corners[3], corners[2], u), v);
+    const p = new V3().lerpVectors(apex, base, tt);
+    dpos.set([p.x, p.y, p.z], i * 3); dseed.push(dr() * 6.28);
+  }
+  const dgeo = new T.BufferGeometry(); dgeo.setAttribute('position', new T.BufferAttribute(dpos, 3));
+  const dotC = document.createElement('canvas'); dotC.width = dotC.height = 32; const dctx = dotC.getContext('2d');
+  const dg = dctx.createRadialGradient(16, 16, 0, 16, 16, 16); dg.addColorStop(0, 'rgba(255,255,255,1)'); dg.addColorStop(1, 'rgba(255,255,255,0)'); dctx.fillStyle = dg; dctx.fillRect(0, 0, 32, 32);
+  const dust = new T.Points(dgeo, new T.PointsMaterial({ map:new T.CanvasTexture(dotC), color:0xffe6c4, size:0.05, transparent:true, opacity:0.5, blending:T.AdditiveBlending, depthWrite:false }));
+  scene.add(dust);
+
+  // seats (instanced, one colour per seat)
+  const N = ROWS * COLS;
+  const seatM = mat(0xffffff, { roughness:0.9 });
+  const cushion = new T.InstancedMesh(new T.BoxGeometry(0.78, 0.2, 0.62), seatM, N);
+  const backrest = new T.InstancedMesh(new T.BoxGeometry(0.78, 0.82, 0.16), seatM, N);
+  const pedestal = new T.InstancedMesh(new T.BoxGeometry(0.5, 0.32, 0.4), dark, N);
+  const arms = new T.InstancedMesh(new T.BoxGeometry(0.11, 0.1, 0.7), mat(0x221a1a, { roughness:0.5 }), ROWS * (COLS + 1));
+  const armPosts = new T.InstancedMesh(new T.BoxGeometry(0.08, 0.5, 0.08), dark, ROWS * (COLS + 1));
+  let ai = 0;
+  for (let r = 0; r < ROWS; r++){
+    const y = rowY(r), z = rowZ(r);
+    for (let c = 0; c < COLS; c++){
+      const i = r * COLS + c, x = seatX(c);
+      dummy.rotation.set(0, 0, 0);
+      dummy.position.set(x, y + 0.44, z - 0.02); dummy.updateMatrix(); cushion.setMatrixAt(i, dummy.matrix);
+      dummy.position.set(x, y + 0.2, z); dummy.updateMatrix(); pedestal.setMatrixAt(i, dummy.matrix);
+      dummy.position.set(x, y + 0.9, z + 0.33); dummy.rotation.set(0.14, 0, 0); dummy.updateMatrix(); backrest.setMatrixAt(i, dummy.matrix);
+    }
+    for (let c = 0; c <= COLS; c++){
+      const x = seatX(c) - 0.5;
+      dummy.rotation.set(0, 0, 0);
+      dummy.position.set(x, y + 0.72, z); dummy.updateMatrix(); arms.setMatrixAt(ai, dummy.matrix);
+      dummy.position.set(x, y + 0.45, z + 0.1); dummy.updateMatrix(); armPosts.setMatrixAt(ai, dummy.matrix);
+      ai++;
+    }
+  }
+  [cushion, backrest, pedestal, arms, armPosts].forEach(m => scene.add(m));
+
+  const C_FREE = new T.Color(0x86151f), C_TAKEN = new T.Color(0x2a2224), C_PICK = new T.Color(0xe0ad4c), C_HOVER = new T.Color(0xc0303d);
+  const tmpC = new T.Color();
+  function paintSeats(){
+    for (let i = 0; i < N; i++){
+      const c = state.picked.includes(i) ? C_PICK : state.taken.has(i) ? C_TAKEN : i === state.hover ? C_HOVER : C_FREE;
+      cushion.setColorAt(i, c);
+      tmpC.copy(c).multiplyScalar(0.82); backrest.setColorAt(i, tmpC);
+    }
+    cushion.instanceColor.needsUpdate = true; backrest.instanceColor.needsUpdate = true;
+  }
+  paintSeats();
+
+  // lights
+  scene.add(new T.AmbientLight(0x3a2a2a, 0.55));
+  scene.add(new T.HemisphereLight(0x4a3530, 0x050304, 0.35));
+  const screenLight = new T.PointLight(0xe2683c, 2.4, 34, 1.4); screenLight.position.set(0, SCRY, FRONT + 2.5); scene.add(screenLight);
+  const fill = new T.PointLight(0xffa860, 0.9, 16, 1.8); fill.position.set(0, 8, 2); scene.add(fill);
+  [[-8.5, 5, -6], [8.5, 5, -6], [-8.5, 5, 2], [8.5, 5, 2]].forEach(p => { const l = new T.PointLight(0xffa25a, 0.75, 8, 1.6); l.position.set(...p); scene.add(l); });
+
+  // post: soft bloom on screen and LEDs (falls back to plain render)
+  let composer = null;
+  try {
+    if (T.EffectComposer && T.UnrealBloomPass && T.RenderPass){
+      composer = new T.EffectComposer(renderer);
+      composer.addPass(new T.RenderPass(scene, camera));
+      composer.addPass(new T.UnrealBloomPass(new T.Vector2(512, 512), 0.65, 0.55, 0.62));
+    }
+  } catch (e){ composer = null; }
+
+  // camera rig
+  const SCREEN_C = new V3(0, SCRY - 0.2, FRONT);
+  const VIEWS = {
+    overview:{ pos:new V3(5.2, 7.4, 5.0), look:new V3(-0.6, 2.6, -8) },
+    screen:{ pos:new V3(-3.5, 2.6, -11.2), look:new V3(0.8, 2.4, 1.5) }
+  };
+  const cam = { pos:VIEWS.overview.pos.clone(), look:VIEWS.overview.look.clone(), yaw:0, pitch:0, tyaw:0, tpitch:0 };
+  let tween = null;
+  const ease = k => k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+  function flyTo(pos, look, dur, curve){
+    tween = { p0:cam.pos.clone(), l0:cam.look.clone(), p1:pos.clone(), l1:look.clone(), t0:performance.now() / 1000, dur:reduceMotion ? 0.001 : dur, curve };
+    cam.tyaw = 0; cam.tpitch = 0;
+  }
+  function seatEye(i){ const r = Math.floor(i / COLS), c = i % COLS; return new V3(seatX(c), rowY(r) + 1.22, rowZ(r) + 0.08); }
+  function setMode(m){
+    state.mode = m;
+    $('vOverview').setAttribute('aria-pressed', m === 'overview');
+    $('vScreen').setAttribute('aria-pressed', m === 'screen');
+    $('vSeat').setAttribute('aria-pressed', m === 'seat');
+  }
+  function toView(name){ setMode(name); flyTo(VIEWS[name].pos, VIEWS[name].look, 1.8); showCaption(null); }
+  function toSeat(i){
+    setMode('seat');
+    const eye = seatEye(i);
+    flyTo(eye, SCREEN_C, 1.9);
+    showCaption(i);
+  }
+  let capTimer = 0;
+  function showCaption(i){
+    const el = $('caption');
+    clearTimeout(capTimer);
+    if (i == null){ el.hidden = true; return; }
+    el.innerHTML = `<b>${seatLabel(i)}</b> · так ви бачитимете екран`;
+    el.hidden = false;
+  }
+
+  // intro flight from the back doorway
+  const intro = new T.CatmullRomCurve3([new V3(9.0, 3.6, 5.6), new V3(8.2, 6.2, 4.4), new V3(6.6, 7.4, 4.6), VIEWS.overview.pos.clone()]);
+  cam.pos.copy(intro.getPoint(0)); cam.look.set(-2, 3, -6);
+  flyTo(VIEWS.overview.pos, VIEWS.overview.look, 4.8, intro);
+
+  // input: drag to look, click a seat
+  const ray = new T.Raycaster(), ndc = new T.Vector2();
+  const el = renderer.domElement;
+  let down = null;
+  function pick(ev){
+    const r = el.getBoundingClientRect();
+    ndc.set((ev.clientX - r.left) / r.width * 2 - 1, -(ev.clientY - r.top) / r.height * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects([cushion, backrest], false)[0];
+    return hit ? hit.instanceId : -1;
+  }
+  el.addEventListener('pointerdown', ev => { down = { x:ev.clientX, y:ev.clientY, moved:false, yaw:cam.tyaw, pitch:cam.tpitch }; el.setPointerCapture(ev.pointerId); });
+  el.addEventListener('pointermove', ev => {
+    if (down){
+      const dx = ev.clientX - down.x, dy = ev.clientY - down.y;
+      if (Math.abs(dx) + Math.abs(dy) > 5){ down.moved = true; el.classList.add('dragging'); }
+      cam.tyaw = Math.max(-1.1, Math.min(1.1, down.yaw + dx * 0.004));
+      cam.tpitch = Math.max(-0.5, Math.min(0.5, down.pitch + dy * 0.003));
+      return;
+    }
+    if (ev.pointerType !== 'mouse') return;
+    const i = pick(ev), tip = $('tip');
+    const ok = i >= 0 && !state.taken.has(i);
+    el.classList.toggle('pointing', i >= 0);
+    setHover(ok ? i : -1);
+    if (i >= 0){
+      const r = el.getBoundingClientRect();
+      tip.textContent = state.taken.has(i) ? `${seatLabel(i)} · зайняте` : `${seatLabel(i)} · ${priceOf(Math.floor(i / COLS))} грн`;
+      tip.style.left = (ev.clientX - r.left) + 'px'; tip.style.top = (ev.clientY - r.top) + 'px'; tip.hidden = false;
+    } else tip.hidden = true;
+  });
+  el.addEventListener('pointerup', ev => {
+    el.classList.remove('dragging');
+    if (down && !down.moved){ const i = pick(ev); if (i >= 0) togglePick(i); }
+    down = null;
+  });
+  el.addEventListener('pointerleave', () => { $('tip').hidden = true; if (!down) setHover(-1); });
+
+  $('vOverview').addEventListener('click', () => toView('overview'));
+  $('vScreen').addEventListener('click', () => toView('screen'));
+  $('vSeat').addEventListener('click', () => { if (state.picked.length) toSeat(state.picked[state.picked.length - 1]); });
+
+  // sizing
+  function resize(){
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.fov = w / h < 0.9 ? 72 : (w / h < 1.3 ? 62 : 52);
+    camera.updateProjectionMatrix();
+    if (composer){ composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(w, h); }
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+
+  // crossfade between trailers
+  let fade = null;
+  function crossfade(fromIdx){ paintFilm(pctx, FILMS[fromIdx], clockT); fade = { t0:clockT }; }
+
+  // loop
+  let clockT = 0, last = performance.now() / 1000;
+  const dirV = new V3(), tgtCol = new T.Color();
+  function frame(){
+    const now = performance.now() / 1000, dt = Math.min(0.05, now - last); last = now; clockT += dt;
+    const f = FILMS[state.film];
+    paintFilm(sctx, f, clockT);
+    if (fade){
+      const a = 1 - (clockT - fade.t0) / 0.9;
+      if (a <= 0) fade = null; else { sctx.globalAlpha = a; sctx.drawImage(prev, 0, 0); sctx.globalAlpha = 1; }
+    }
+    tex.needsUpdate = true;
+    tgtCol.set(f.pal.sky2); screenLight.color.lerp(tgtCol, 0.05);
+    screenLight.intensity = 2.2 + Math.sin(clockT * 3.1) * 0.12 + Math.sin(clockT * 7.3) * 0.08;
+    beamMat.opacity = 0.06 + Math.sin(clockT * 2.3) * 0.006;
+
+    const pa = dgeo.attributes.position.array;
+    for (let i = 0; i < DN; i++){ pa[i * 3 + 1] += Math.sin(clockT * 0.4 + dseed[i]) * 0.0012; pa[i * 3] += Math.cos(clockT * 0.3 + dseed[i]) * 0.0009; }
+    dgeo.attributes.position.needsUpdate = true;
+
+    if (tween){
+      const k = Math.min(1, (now - tween.t0) / tween.dur), e = ease(k);
+      if (tween.curve) cam.pos.copy(tween.curve.getPoint(e)); else cam.pos.lerpVectors(tween.p0, tween.p1, e);
+      cam.look.lerpVectors(tween.l0, tween.l1, e);
+      if (k >= 1) tween = null;
+    }
+    cam.yaw += (cam.tyaw - cam.yaw) * 0.12; cam.pitch += (cam.tpitch - cam.pitch) * 0.12;
+    const p = cam.pos.clone();
+    if (!tween && !reduceMotion && state.mode !== 'seat'){ p.x += Math.sin(clockT * 0.15) * 0.35; p.y += Math.sin(clockT * 0.11) * 0.12; }
+    dirV.subVectors(cam.look, cam.pos);
+    const a = Math.atan2(dirV.x, dirV.z) + cam.yaw;
+    const pt = Math.max(-1.2, Math.min(1.2, Math.atan2(dirV.y, Math.hypot(dirV.x, dirV.z)) + cam.pitch));
+    camera.position.copy(p);
+    camera.lookAt(p.x + Math.sin(a) * Math.cos(pt), p.y + Math.sin(pt), p.z + Math.cos(a) * Math.cos(pt));
+
+    if (composer) composer.render(); else renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  return { paintSeats, toSeat, toView, crossfade };
+}
+
+/* ---------- Boot ---------- */
+buildTaken(); buildFilms(); buildTimes(); buildMap(); refreshAll();
+try {
+  three = initThree();
+  setTimeout(() => $('loading').classList.add('gone'), 250);
+} catch (e){
+  $('loading').textContent = 'Цей пристрій не показує 3D. Бронювання на схемі праворуч працює.';
+}
+if (document.fonts && document.fonts.load){
+  Promise.all([document.fonts.load('46px Prata'), document.fonts.load('500 13px "Golos Text"')]).then(() => {
+    document.querySelectorAll('.film canvas').forEach(c => c.remove());
+    $('films').innerHTML = ''; buildFilms(); refreshHeader();
+  }).catch(() => {});
+}
+})();
+</script>
+</body>
+</html>
