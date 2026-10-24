@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mova Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@400;500;700&display=swap">
+<style>
+/* Layout: school timetable — groups as a weekly grid, trial-lesson booking as the main action */
+:root{
+  --bg:#F7F6F3; --card:#FFFFFF; --ink:#1D2433; --muted:#5C6475;
+  --accent:#D94F3D; --accent-ink:#FFFFFF; --navy:#24345C; --line:#E2E0DA;
+  --display:"Prata", Georgia, serif; --body:"Onest", system-ui, sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#12151C; --card:#1A1F29; --ink:#E7E9EE; --muted:#9AA2B2;
+  --accent:#F07563; --accent-ink:#12151C; --navy:#9DB2E8; --line:#2A303C; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px;flex-wrap:wrap}
+.logo{font:1.4rem var(--display)}
+.logo span{color:var(--accent)}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:12px 22px;font:700 1rem var(--body);text-decoration:none;cursor:pointer}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.hero{padding-block:32px 48px;display:grid;grid-template-columns:1.4fr 1fr;gap:36px;align-items:center}
+.hero h1{font:clamp(2rem,6vw,3.4rem)/1.1 var(--display);margin:0 0 16px;text-wrap:balance}
+.hero p{color:var(--muted);font-size:1.1rem;max-width:44ch;margin:0 0 24px}
+.levels{display:flex;flex-wrap:wrap;gap:8px}
+.levels span{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:500;background:var(--card)}
+.trial{background:var(--navy);color:#fff;border-radius:20px;padding:24px}
+.trial b{font:2.4rem var(--display);display:block}
+section h2{font:clamp(1.5rem,4vw,2.1rem) var(--display);margin:0 0 20px}
+.sched .wrap,.book .wrap,.price .wrap{padding-block:44px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.slot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:4px}
+.slot small{color:var(--accent);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.slot strong{font-size:1.05rem}
+.slot span{color:var(--muted);font-variant-numeric:tabular-nums}
+table{border-collapse:collapse;width:100%;max-width:560px;font-variant-numeric:tabular-nums}
+td{padding:12px 0;border-bottom:1px solid var(--line)}
+td:last-child{text-align:right;font-weight:700}
+.form{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;display:grid;gap:14px;max-width:560px}
+.form label{display:grid;gap:6px;font-weight:500}
+.form input,.form select{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.done{margin:0;font-weight:700;color:var(--accent)}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+footer .wrap{padding-block:22px}
+@media (max-width:720px){.hero,.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo">Mova<span>·</span>Lab</div>
+  <a class="btn" href="#book">Пробне заняття</a>
+</div></header>
+
+<main>
+<section class="wrap hero">
+  <div>
+    <h1>Англійська, на якій ви почнете говорити вже в перший місяць</h1>
+    <p>Міні-групи до 6 людей, розмовний клуб щоп'ятниці і викладачі, які самі жили за кордоном.</p>
+    <div class="levels"><span>Діти 7–12</span><span>Підлітки</span><span>Дорослі</span><span>IELTS</span></div>
+  </div>
+  <aside class="trial">
+    Перше заняття
+    <b>безкоштовно</b>
+    Визначимо рівень і підберемо групу за 45 хвилин.
+  </aside>
+</section>
+
+<section class="sched"><div class="wrap">
+  <h2>Групи цього семестру</h2>
+  <div class="grid">
+    <div class="slot"><small>A1 · діти</small><strong>Пн, Ср</strong><span>16:00 – 17:00</span></div>
+    <div class="slot"><small>A2 · підлітки</small><strong>Вт, Чт</strong><span>17:30 – 18:30</span></div>
+    <div class="slot"><small>B1 · дорослі</small><strong>Пн, Ср</strong><span>19:00 – 20:30</span></div>
+    <div class="slot"><small>Розмовний клуб</small><strong>Пт</strong><span>18:00 – 19:30</span></div>
+  </div>
+</div></section>
+
+<section class="price"><div class="wrap">
+  <h2>Вартість</h2>
+  <table>
+    <tr><td>Міні-група, 8 занять</td><td>2 400 грн</td></tr>
+    <tr><td>Індивідуально, 1 заняття</td><td>450 грн</td></tr>
+    <tr><td>Розмовний клуб, разове відвідування</td><td>200 грн</td></tr>
+  </table>
+</div></section>
+
+<section class="book" id="book"><div class="wrap">
+  <h2>Запис на пробне заняття</h2>
+  <form class="form" id="form">
+    <div class="row">
+      <label for="who">Для кого<select id="who"><option>Для дитини</option><option>Для підлітка</option><option>Для себе</option></select></label>
+      <label for="lvl">Рівень<select id="lvl"><option>Не знаю</option><option>Початковий</option><option>Середній</option></select></label>
+    </div>
+    <label for="nm">Ім'я<input id="nm" required placeholder="Олена"></label>
+    <label for="ph">Телефон для Telegram або Viber<input id="ph" type="tel" required placeholder="+380"></label>
+    <button class="btn" type="submit">Записатися безкоштовно</button>
+    <p class="done" id="done" hidden>Дякуємо! Адміністратор напише вам сьогодні.</p>
+  </form>
+</div></section>
+</main>
+
+<footer><div class="wrap">Демо-сайт вигаданої мовної школи. Дизайн і розробка: Павло, Рівне.</div></footer>
+<script>
+document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();document.getElementById('done').hidden=false;});
+</script>
+</body>
+</html>
