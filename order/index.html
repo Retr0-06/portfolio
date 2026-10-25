@@ -174,7 +174,7 @@ footer a{color:var(--accent);font-weight:600;text-decoration:none}
     <a href="#work" data-i18n="nav.work">Роботи</a>
     <span class="lang" role="group" aria-label="Мова / Language">
       <button type="button" id="l-uk" aria-pressed="true">UA</button>
-      <button type="button" id="l-en" aria-pressed="false">EN</button>
+      <button type="button" id="l-en" aria-pressed="false" aria-label="International: English, prices in USD">Global</button>
     </span>
     <a class="btn" href="#order" data-i18n="nav.order">Замовити сайт</a>
   </nav>
@@ -194,7 +194,7 @@ footer a{color:var(--accent);font-weight:600;text-decoration:none}
       <ul class="trust">
         <li data-i18n="trust.1">Чернетка безкоштовно, до оплати</li>
         <li data-i18n="trust.2">30 днів правок</li>
-        <li data-i18n="trust.3">Україна та Велика Британія</li>
+        <li data-i18n="trust.3">Україна й клієнти з усього світу</li>
       </ul>
     </div>
   </section>
@@ -296,13 +296,13 @@ window.SITE_CONFIG = {
   // Your Telegram username without @, e.g. 'pavlo_web'. Empty = the Telegram button is hidden.
   telegram: 'apostol0',
   packs: [
-    { id:'landing', uah:6000, gbp:249,
+    { id:'landing', uah:6000, usd:299,
       uk:{ name:'Лендинг', items:['Одна сторінка з послугами, цінами й контактами', 'Форма заявки в Telegram', 'Готово за 5 днів'] },
       en:{ name:'Landing page', items:['One page with your services, prices and contacts', 'Enquiry form sent to your phone', 'Live in 5 days'] } },
-    { id:'tool', uah:9000, gbp:349, best:true,
+    { id:'tool', uah:9000, usd:449, best:true,
       uk:{ name:'Лендинг + інструмент', items:['Усе з пакета «Лендинг»', 'Калькулятор вартості, квіз або онлайн-запис', 'Таблиця всіх заявок'] },
       en:{ name:'Landing + tool', items:['Everything in Landing page', 'Price calculator, quote quiz or booking form', 'Google Sheet with every enquiry'] } },
-    { id:'3d', uah:15000, gbp:590,
+    { id:'3d', uah:15000, usd:749,
       uk:{ name:'3D-сайт', items:['3D-сцена й анімації при прокрутці, як на цій сторінці', 'Для ресторанів, шоурумів, подій', 'Готово за 7–10 днів'] },
       en:{ name:'3D website', items:['A 3D scene and scroll animations, like this page', 'For restaurants, showrooms and events', 'Live in 7–10 days'] } }
   ]
@@ -324,9 +324,9 @@ const EN = {
   'nav.label':'Sections', 'nav.how':'How I work', 'nav.price':'Prices', 'nav.work':'Work', 'nav.order':'Order a website',
   'hero.eyebrow':'Web design for small businesses',
   'hero.h1':'A website that brings you customers. Live in 5 days.',
-  'hero.lead':'I build one-page websites for cafés, salons, schools and local services: prices, photos, reviews and an enquiry form that lands straight on your phone.',
+  'hero.lead':'I build one-page websites for cafés, salons, schools and local services anywhere in the world: prices, photos, reviews and an enquiry form that lands straight on your phone.',
   'hero.cta':'Order a website', 'hero.cta2':'See my work',
-  'trust.1':'Free first draft before you pay', 'trust.2':'30 days of free edits', 'trust.3':'Ukraine and the UK',
+  'trust.1':'Free first draft before you pay', 'trust.2':'30 days of free edits', 'trust.3':'Clients worldwide, fully remote',
   'how.eyebrow':'How I work', 'how.h2':'Five days from idea to a live website',
   's1.day':'Day 1', 's1.b':'Free first draft', 's1.t':'I show you the homepage with your name, services and prices. You only pay if you like it.',
   's2.day':'Days 2–4', 's2.b':'Building', 's2.t':'After a 50% deposit I write the copy, pick photos, and set up the enquiry form and mobile version.',
@@ -337,18 +337,18 @@ const EN = {
   'l3.b':'No lost enquiries', 'l3.t':'Every enquiry reaches your phone in a second and is saved to a Google Sheet.',
   'in.hint':'Hover a layer to see it in the mock-up.',
   'p.eyebrow':'Prices', 'p.h2':'Choose a package',
-  'p.note':'Every site is built for phones first, where most of your customers come from. Already have a website? <a href="https://retr0-06.github.io/portfolio/tools/">I can add a calculator, quiz or booking form</a> from £99.',
+  'p.note':'Every site is built for phones first, where most of your customers come from. Already have a website? <a href="https://retr0-06.github.io/portfolio/tools/">I can add a calculator, quiz or booking form</a> from $129.',
   'w.eyebrow':'Work', 'w.h2':'Demo websites you can open', 'w.open':'Open →',
   'w1.b':'KADR Cinema', 'w1.t':'3D hall, session and seat booking', 'w2.t':'Bakery with next-day pre-orders', 'w3.t':'Language school with a free trial lesson', 'w4.b':'Website tools', 'w4.t':'Calculator, quiz, online booking',
   'w.note':'Demos show fictional businesses.',
   'f.eyebrow':'Questions', 'f.h2':'What people usually ask',
   'q1':'What do I need to prepare?', 'a1':'Your business name, a list of services with prices, a few photos and your contacts. No photos? I will find good stock ones and write the copy myself.',
-  'q2':'How much are the domain and hosting?', 'a2':'Hosting is free. A domain costs around £10–15 a year and is registered in your name, so the site is fully yours.',
+  'q2':'How much are the domain and hosting?', 'a2':'Hosting is free. A domain costs around $10–20 a year and is registered in your name, so the site is fully yours.',
   'q3':'How does payment work?', 'a3':'50% once you approve the draft and 50% after launch, by bank transfer or PayPal.',
   'q4':'Can I change things later?', 'a4':'For the first 30 days I update copy, prices and photos for free. After that, small edits by agreement.',
   'q5':'I already have a site on Wix or Squarespace. What then?', 'a5':'No need to rebuild it. I can add a price calculator, quote quiz or booking form with one block of code: <a href="https://retr0-06.github.io/portfolio/tools/">see the tools</a>.',
   'o.eyebrow':'Order', 'o.h2':'Tell me about your business', 'o.lead':'I will reply within a day with a free draft of your homepage.',
-  'o.name':'Name', 'o.contact':'How can I reach you', 'o.contactPh':'Phone, email or WhatsApp', 'o.biz':'Your business', 'o.bizPh':'For example: café in Manchester',
+  'o.name':'Name', 'o.contact':'How can I reach you', 'o.contactPh':'Email, WhatsApp or Telegram', 'o.biz':'Your business', 'o.bizPh':'For example: coffee shop in Berlin',
   'o.pack':'Package', 'o.msg':'Comment', 'o.msgPh':'Do you have a website now, what would you like to change, sites you like',
   'o.send':'Send enquiry', 'o.note':'No payment for the draft. Only I see your details.', 'o.direct':'Or message me directly:',
   'o.unsure':'Not sure yet', 'o.unsureSub':'we will decide on a call',
@@ -361,13 +361,13 @@ document.querySelectorAll('[data-i18n-ph]').forEach(el => { UK[el.dataset.i18nPh
 Object.assign(UK, UK_EXTRA);
 const MSG = {
   uk:{ need:"Вкажіть ім'я і контакт, щоб я міг вам відповісти.", sending:'Надсилаю…', sent:'Заявку надіслано', fail:'Не вдалося надіслати. Спробуйте ще раз або напишіть мені в Telegram.',
-       doneB:'Дякую! Заявку отримано.', doneT:'Напишу вам протягом дня з чернеткою головного екрана.', best:'Найчастіше', pick:'Обрати цей пакет →', from:'від', uah:'грн', ukNote:'для UK', title:'Pavlo · Замовити сайт' },
+       doneB:'Дякую! Заявку отримано.', doneT:'Напишу вам протягом дня з чернеткою головного екрана.', best:'Найчастіше', pick:'Обрати цей пакет →', from:'від', uah:'грн', ukNote:'для інших країн', title:'Pavlo · Замовити сайт' },
   en:{ need:'Add your name and a way to reach you so I can reply.', sending:'Sending…', sent:'Enquiry sent', fail:'Could not send. Please try again or message me on Telegram.',
        doneB:'Thank you! Your enquiry is in.', doneT:'I will reply within a day with a draft of your homepage.', best:'Most popular', pick:'Choose this package →', from:'from', uah:'UAH', ukNote:'', title:'Pavlo · Order a website' }
 };
 let lang = 'uk';
 try { const s = localStorage.getItem('pw-lang'); if (s === 'en' || s === 'uk') lang = s; } catch (e){}
-if (/(^|[?&])lang=en/.test(location.search) || location.hash === '#en') lang = 'en';
+if (/(^|[?&])lang=(en|global|intl)/.test(location.search) || location.hash === '#en' || location.hash === '#global') lang = 'en';
 if (/(^|[?&])lang=(uk|ua)/.test(location.search) || location.hash === '#ua') lang = 'uk';
 
 const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -381,8 +381,8 @@ function renderPacks(){
     const h = document.createElement('h3'); h.textContent = t.name;
     if (p.best){ const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = m.best; h.append(tag); }
     const pr = document.createElement('div'); pr.className = 'price';
-    if (lang === 'en'){ pr.textContent = `${m.from} £${p.gbp}`; }
-    else { pr.textContent = `${m.from} ${fmt(p.uah)} ${m.uah}`; const s = document.createElement('small'); s.textContent = `£${p.gbp} ${m.ukNote}`; pr.append(s); }
+    if (lang === 'en'){ pr.textContent = `${m.from} $${p.usd}`; }
+    else { pr.textContent = `${m.from} ${fmt(p.uah)} ${m.uah}`; const s = document.createElement('small'); s.textContent = `$${p.usd} ${m.ukNote}`; pr.append(s); }
     const ul = document.createElement('ul'); t.items.forEach(x => { const li = document.createElement('li'); li.textContent = x; ul.append(li); });
     const b = document.createElement('button'); b.type = 'button'; b.className = 'pick'; b.textContent = m.pick;
     b.addEventListener('click', () => pickPack(p.id));
@@ -392,7 +392,7 @@ function renderPacks(){
     lab.innerHTML = `<input type="radio" name="pack" id="p-${p.id}"><span></span>`;
     lab.querySelector('input').value = p.id;
     lab.querySelector('span').innerHTML = '';
-    lab.querySelector('span').append(t.name, Object.assign(document.createElement('small'), { textContent: lang === 'en' ? `${m.from} £${p.gbp}` : `${m.from} ${fmt(p.uah)} ${m.uah}` }));
+    lab.querySelector('span').append(t.name, Object.assign(document.createElement('small'), { textContent: lang === 'en' ? `${m.from} $${p.usd}` : `${m.from} ${fmt(p.uah)} ${m.uah}` }));
     $('packOpts').append(lab);
   });
   const lab = document.createElement('label'); lab.className = 'opt';
@@ -445,7 +445,7 @@ $('form').addEventListener('submit', async e => {
   $('err').hidden = true;
   const packId = fd.get('pack');
   const pack = CFG.packs.find(p => p.id === packId);
-  const fields = { "Ім'я": name, 'Контакт': contact, 'Бізнес': (fd.get('biz') || '').trim(), 'Пакет': pack ? pack.uk.name : UK['o.unsure'], 'Коментар': (fd.get('msg') || '').trim(), 'Мова': lang === 'en' ? 'EN' : 'UA' };
+  const fields = { "Ім'я": name, 'Контакт': contact, 'Бізнес': (fd.get('biz') || '').trim(), 'Пакет': pack ? pack.uk.name : UK['o.unsure'], 'Коментар': (fd.get('msg') || '').trim(), 'Версія': lang === 'en' ? 'Global ($)' : 'UA (грн)' };
   const btn = $('send'); btn.disabled = true; btn.textContent = m.sending;
   const box = $('sent'); box.innerHTML = '';
   try {
