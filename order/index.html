@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pavlo · Замовити сайт</title>
+<meta name="description" content="Лендинги для малого бізнесу за 5 днів: безкоштовна чернетка, заявки в Telegram, 3D-сайти. Websites for small businesses, live in 5 days.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pavlo · Сайт, який приносить заявки. Готовий за 5 днів.">
+<meta property="og:description" content="Лендинги для кав'ярень, салонів, шкіл і сервісів. Безкоштовна чернетка до оплати, 30 днів правок.">
+<meta property="og:url" content="https://retr0-06.github.io/portfolio/order/">
+<meta name="theme-color" content="#2F6F5E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Layout: copy runs down the left column while a 3D website, built from blocks, assembles itself on the right as you scroll. On phones the blocks float behind translucent cards. */
+:root{
+  --bg:#F2F4F3; --card:#FFFFFF; --card-glass:rgba(255,255,255,.88);
+  --ink:#17201D; --muted:#5A6762; --accent:#2F6F5E; --accent-ink:#FFFFFF;
+  --line:#D6DEDA; --pop:#E3A63B; --soft:#CFE3DA; --soft2:#E3ECE8; --edge:#B9C7C1; --err:#B83A27;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111715; --card:#1A221F; --card-glass:rgba(26,34,31,.88);
+  --ink:#E4EBE8; --muted:#98A6A0; --accent:#6CC2A8; --accent-ink:#0E1513;
+  --line:#2A3430; --pop:#EDB14B; --soft:#2C4A40; --soft2:#22302B; --edge:#3B4A44; --err:#F08A73; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111715; --card:#1A221F; --card-glass:rgba(26,34,31,.88);
+  --ink:#E4EBE8; --muted:#98A6A0; --accent:#6CC2A8; --accent-ink:#0E1513;
+  --line:#2A3430; --pop:#EDB14B; --soft:#2C4A40; --soft2:#22302B; --edge:#3B4A44; --err:#F08A73; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-padding-top:72px}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#scene{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:color-mix(in srgb, var(--bg) 84%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.logo{font:700 15px var(--display);letter-spacing:.02em;text-decoration:none;white-space:nowrap}
+.logo span{color:var(--accent)}
+.top nav{display:flex;gap:18px;align-items:center;font-size:15px}
+.top nav a{text-decoration:none;color:var(--muted)}
+.top nav a:hover{color:var(--ink)}
+.top nav .btn{color:var(--accent-ink)}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.lang button{border:0;background:none;color:var(--muted);font:600 13px var(--body);padding:6px 9px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.progress{position:absolute;left:0;bottom:0;height:2px;background:var(--accent);width:0;transform-origin:left}
+
+main{position:relative;z-index:1;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sec{min-height:100vh;display:flex;align-items:center;padding-block:72px}
+.col{width:min(560px,100%);margin-left:max(0px,calc((100vw - 1200px)/2));min-width:0}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1,h2{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.06}
+h2{font-size:clamp(26px,3.4vw,38px);line-height:1.12}
+.lead{font-size:clamp(17px,1.6vw,19px);color:var(--muted);margin:18px 0 0;max-width:46ch}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:12px;padding:13px 20px;font:600 16px var(--body);text-decoration:none;cursor:pointer;background:var(--accent);color:var(--accent-ink);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.7;cursor:default;transform:none}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.top .btn{padding:9px 14px;font-size:14px;border-radius:10px}
+.trust{display:flex;flex-wrap:wrap;gap:6px 18px;margin:22px 0 0;padding:0;list-style:none;color:var(--muted);font-size:14px}
+.trust li::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;background:var(--pop);margin-right:8px;vertical-align:1px}
+
+.steps{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:4px}
+.steps li{display:grid;grid-template-columns:88px minmax(0,1fr);gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+.steps .day{font:500 13px var(--display);color:var(--accent);padding-top:3px}
+.steps b{display:block;font-size:17px}
+.steps span{color:var(--muted)}
+
+.layers{display:grid;gap:6px;margin-top:24px}
+.layer{display:grid;grid-template-columns:14px minmax(0,1fr);gap:14px;align-items:start;text-align:left;background:none;border:1px solid transparent;border-radius:12px;padding:12px;color:inherit;font:inherit;cursor:pointer}
+.layer:hover,.layer[aria-pressed="true"]{background:var(--card);border-color:var(--line)}
+.layer i{width:14px;height:14px;border-radius:4px;margin-top:5px}
+.layer b{display:block;font-size:17px}
+.layer span{color:var(--muted)}
+.hint{font-size:13px;color:var(--muted);margin:10px 0 0 12px}
+
+.packs{display:grid;gap:12px;margin-top:26px}
+.pack{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;align-items:start}
+.pack.best{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.pack h3{margin:0;font:600 18px var(--display)}
+.pack .tag{display:inline-block;font-size:12px;font-weight:600;color:var(--accent-ink);background:var(--accent);border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:3px;font-family:var(--body)}
+.price{text-align:right;font-weight:600;font-size:18px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.price small{display:block;font-size:13px;font-weight:400;color:var(--muted)}
+.pack ul{grid-column:1/-1;margin:8px 0 0;padding-left:18px;color:var(--muted)}
+.pack .pick{grid-column:1/-1;justify-self:start;margin-top:10px;background:none;border:0;padding:0;font:600 15px var(--body);color:var(--accent);cursor:pointer}
+.pack .pick:hover{text-decoration:underline}
+.small{font-size:14px;color:var(--muted);margin:14px 0 0}
+.small a{color:var(--accent);font-weight:600}
+
+.work{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:26px}
+.work a{display:grid;gap:4px;align-content:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-decoration:none}
+.work a:hover{border-color:var(--accent)}
+.work b{font:600 16px var(--display)}
+.work span{color:var(--muted);font-size:14px}
+.work em{font-style:normal;color:var(--accent);font-weight:600;font-size:14px;margin-top:4px}
+
+.faq{margin-top:22px;display:grid;gap:8px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 16px}
+.faq summary{cursor:pointer;font-weight:600;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--accent);font-weight:600;font-size:20px;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin:0 0 14px;color:var(--muted)}
+.faq a{color:var(--accent);font-weight:600}
+
+.form{display:grid;gap:14px;margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.form label{display:grid;gap:6px;font-weight:500;font-size:15px}
+.form input,.form textarea{font:16px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+.form input[aria-invalid="true"]{border-color:var(--err)}
+.form textarea{min-height:92px;resize:vertical}
+.form fieldset{border:0;margin:0;padding:0;display:grid;gap:8px;min-width:0}
+.form legend{font-weight:500;font-size:15px;margin-bottom:6px;padding:0}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0}
+.opt span{display:block;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;cursor:pointer;background:var(--bg);height:100%}
+.opt span small{display:block;color:var(--muted)}
+.opt input:checked + span{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt input:focus-visible + span{outline:3px solid var(--accent);outline-offset:2px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.err{color:var(--err);margin:0;font-size:14px}
+.form .btn{justify-content:center;width:100%}
+.note{margin:0;color:var(--muted);font-size:13px;text-align:center}
+.direct{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px;color:var(--muted);font-size:15px}
+.done{margin-top:16px;background:var(--card);border:1px solid var(--accent);border-radius:14px;padding:16px 18px}
+.done b{display:block;font-size:17px}
+.done p{margin:4px 0 0;color:var(--muted)}
+
+.tg{border-radius:14px;padding:14px;background:#C9D9E6;color:#0F1419;margin-top:12px}
+.tg p{margin:0 0 8px;font-size:13px;color:#36516A}
+.tg .bubble{background:#fff;border-radius:12px 12px 12px 4px;padding:10px 12px;max-width:360px;white-space:pre-line;font-size:15px;line-height:1.45}
+.tg .bubble b{display:block;color:#2A7AB8;margin-bottom:4px}
+.tg time{display:block;text-align:right;font-size:12px;color:#8A98A5}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tg{background:#16222E;color:#E6EDF3}:root:not([data-theme="light"]) .tg p{color:#8FA9C2}:root:not([data-theme="light"]) .tg .bubble{background:#22303E}:root:not([data-theme="light"]) .tg .bubble b{color:#6AB2F2}}
+:root[data-theme="dark"] .tg{background:#16222E;color:#E6EDF3}:root[data-theme="dark"] .tg p{color:#8FA9C2}:root[data-theme="dark"] .tg .bubble{background:#22303E}:root[data-theme="dark"] .tg .bubble b{color:#6AB2F2}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--line);color:var(--muted);font-size:14px;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--bg)}
+footer div{width:min(1200px,100%);margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px}
+footer a{color:var(--accent);font-weight:600;text-decoration:none}
+
+@media (max-width: 900px){
+  .top nav a:not(.btn){display:none}
+  .sec{min-height:auto;padding-block:0;margin-bottom:46vh;display:block}
+  .sec.hero{padding-top:28px;margin-bottom:52vh}
+  .col{margin-left:0;width:100%;background:var(--card-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:20px;padding:22px 18px}
+  .sec.last{margin-bottom:40px}
+  .work{grid-template-columns:1fr}
+  .hint{display:none}
+}
+@media (max-width: 420px){ .opts{grid-template-columns:1fr} .steps li{grid-template-columns:1fr;gap:2px} .top{gap:8px} .top .btn{padding:8px 10px} }
+@media (prefers-reduced-motion: reduce){ .btn{transition:none} html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<header class="top">
+  <a class="logo" href="#top">Pavlo<span>.</span>web</a>
+  <nav aria-label="Розділи" data-i18n-aria="nav.label">
+    <a href="#how" data-i18n="nav.how">Як працюю</a>
+    <a href="#packs" data-i18n="nav.price">Ціни</a>
+    <a href="#work" data-i18n="nav.work">Роботи</a>
+    <span class="lang" role="group" aria-label="Мова / Language">
+      <button type="button" id="l-uk" aria-pressed="true">UA</button>
+      <button type="button" id="l-en" aria-pressed="false">EN</button>
+    </span>
+    <a class="btn" href="#order" data-i18n="nav.order">Замовити сайт</a>
+  </nav>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main id="top">
+  <section class="sec hero" data-state="0">
+    <div class="col">
+      <p class="eyebrow" data-i18n="hero.eyebrow">Веб-дизайн для малого бізнесу</p>
+      <h1 data-i18n="hero.h1">Сайт, який приносить заявки. Готовий за 5 днів.</h1>
+      <p class="lead" data-i18n="hero.lead">Збираю лендинги для кав'ярень, салонів, шкіл і сервісів: ціни, фото, відгуки й форма заявки, яка одразу приходить вам у Telegram.</p>
+      <div class="actions">
+        <a class="btn" href="#order" data-i18n="hero.cta">Замовити сайт</a>
+        <a class="btn ghost" href="#work" data-i18n="hero.cta2">Подивитися роботи</a>
+      </div>
+      <ul class="trust">
+        <li data-i18n="trust.1">Чернетка безкоштовно, до оплати</li>
+        <li data-i18n="trust.2">30 днів правок</li>
+        <li data-i18n="trust.3">Україна та Велика Британія</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" id="how" data-state="1">
+    <div class="col">
+      <p class="eyebrow" data-i18n="how.eyebrow">Як я працюю</p>
+      <h2 data-i18n="how.h2">П'ять днів від ідеї до живого сайту</h2>
+      <ol class="steps">
+        <li><span class="day" data-i18n="s1.day">День 1</span><div><b data-i18n="s1.b">Безкоштовна чернетка</b><span data-i18n="s1.t">Показую головний екран з вашою назвою, послугами й цінами. Платите тільки якщо подобається.</span></div></li>
+        <li><span class="day" data-i18n="s2.day">Дні 2–4</span><div><b data-i18n="s2.b">Збираю сайт</b><span data-i18n="s2.t">Після 50% передоплати пишу тексти, підбираю фото, налаштовую форму заявки й мобільну версію.</span></div></li>
+        <li><span class="day" data-i18n="s3.day">День 5</span><div><b data-i18n="s3.b">Запуск</b><span data-i18n="s3.t">Підключаю домен, разом надсилаємо тестову заявку. Решту оплачуєте, коли все працює.</span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" data-state="2">
+    <div class="col">
+      <p class="eyebrow" data-i18n="in.eyebrow">Що всередині</p>
+      <h2 data-i18n="in.h2">Три шари, з яких складається сайт</h2>
+      <div class="layers" role="group">
+        <button type="button" class="layer" data-layer="design" aria-pressed="false"><i style="background:var(--soft)"></i><div><b data-i18n="l1.b">Дизайн під ваш бренд</b><span data-i18n="l1.t">Кольори, шрифти й фото з вашого закладу, без шаблонного вигляду.</span></div></button>
+        <button type="button" class="layer" data-layer="text" aria-pressed="false"><i style="background:var(--accent)"></i><div><b data-i18n="l2.b">Тексти, які продають</b><span data-i18n="l2.t">Пишу про ваші послуги простою мовою: що ви робите, скільки коштує, де вас знайти.</span></div></button>
+        <button type="button" class="layer" data-layer="leads" aria-pressed="false"><i style="background:var(--pop)"></i><div><b data-i18n="l3.b">Заявки без втрат</b><span data-i18n="l3.t">Кожна заявка приходить у Telegram за секунду й зберігається в Google Таблиці.</span></div></button>
+      </div>
+      <p class="hint" data-i18n="in.hint">Наведіть на шар, щоб побачити його в макеті.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="packs" data-state="3">
+    <div class="col">
+      <p class="eyebrow" data-i18n="p.eyebrow">Ціни</p>
+      <h2 data-i18n="p.h2">Оберіть пакет</h2>
+      <div class="packs" id="packList"></div>
+      <p class="small" data-i18n="p.note">Кожен сайт адаптований під телефон: саме звідти приходить більшість ваших клієнтів. Уже маєте сайт? <a href="https://retr0-06.github.io/portfolio/tools/">Додам калькулятор, квіз або запис</a> від 3 000 грн.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="work" data-state="3">
+    <div class="col">
+      <p class="eyebrow" data-i18n="w.eyebrow">Роботи</p>
+      <h2 data-i18n="w.h2">Демо-сайти, які можна відкрити</h2>
+      <div class="work">
+        <a href="https://retr0-06.github.io/portfolio/cinema/" target="_blank" rel="noopener"><b data-i18n="w1.b">Кінотеатр «КАДР»</b><span data-i18n="w1.t">3D-зала, вибір сеансу й місця</span><em data-i18n="w.open">Відкрити →</em></a>
+        <a href="https://retr0-06.github.io/portfolio/bakery/" target="_blank" rel="noopener"><b>Kiln Lane Bakery</b><span data-i18n="w2.t">Пекарня з передзамовленням на завтра</span><em data-i18n="w.open">Відкрити →</em></a>
+        <a href="https://retr0-06.github.io/portfolio/school/" target="_blank" rel="noopener"><b>Mova Lab</b><span data-i18n="w3.t">Мовна школа з записом на пробне заняття</span><em data-i18n="w.open">Відкрити →</em></a>
+        <a href="https://retr0-06.github.io/portfolio/tools/" target="_blank" rel="noopener"><b data-i18n="w4.b">Інструменти для сайту</b><span data-i18n="w4.t">Калькулятор, квіз, онлайн-запис</span><em data-i18n="w.open">Відкрити →</em></a>
+      </div>
+      <p class="small" data-i18n="w.note">Демо показують вигадані компанії.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="faq" data-state="3">
+    <div class="col">
+      <p class="eyebrow" data-i18n="f.eyebrow">Питання</p>
+      <h2 data-i18n="f.h2">Що зазвичай питають</h2>
+      <div class="faq">
+        <details><summary data-i18n="q1">Що мені потрібно підготувати?</summary><p data-i18n="a1">Назву, список послуг із цінами, кілька фото й контакти. Якщо фото немає, підберу якісні стокові, а тексти напишу сам.</p></details>
+        <details><summary data-i18n="q2">Скільки коштує домен і хостинг?</summary><p data-i18n="a2">Хостинг безкоштовний. Домен коштує кілька сотень гривень на рік, реєструємо його на ваше ім'я, тож сайт повністю ваш.</p></details>
+        <details><summary data-i18n="q3">Як відбувається оплата?</summary><p data-i18n="a3">50% після того, як схвалите чернетку, і 50% після запуску. Банківський переказ або PayPal для клієнтів з-за кордону.</p></details>
+        <details><summary data-i18n="q4">Чи можна потім щось змінити?</summary><p data-i18n="a4">Перші 30 днів змінюю тексти, ціни й фото безкоштовно. Далі дрібні правки за домовленістю.</p></details>
+        <details><summary data-i18n="q5">У мене вже є сайт на Tilda чи Wix. Що робити?</summary><p data-i18n="a5">Його не треба переробляти. Можу додати калькулятор вартості, квіз або онлайн-запис одним блоком коду: <a href="https://retr0-06.github.io/portfolio/tools/">подивитися інструменти</a>.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec last" id="order" data-state="4">
+    <div class="col">
+      <p class="eyebrow" data-i18n="o.eyebrow">Замовлення</p>
+      <h2 data-i18n="o.h2">Розкажіть про свій бізнес</h2>
+      <p class="lead" data-i18n="o.lead">Протягом дня напишу вам і покажу безкоштовну чернетку головного екрана.</p>
+      <form class="form" id="form" novalidate>
+        <label for="f-name"><span data-i18n="o.name">Ім'я</span><input id="f-name" name="name" autocomplete="name" required></label>
+        <label for="f-contact"><span data-i18n="o.contact">Як з вами зв'язатися</span><input id="f-contact" name="contact" autocomplete="tel" data-i18n-ph="o.contactPh" placeholder="Telegram, телефон або email" required></label>
+        <label for="f-biz"><span data-i18n="o.biz">Ваш бізнес</span><input id="f-biz" name="biz" data-i18n-ph="o.bizPh" placeholder="Наприклад: кав'ярня в Рівному"></label>
+        <fieldset>
+          <legend data-i18n="o.pack">Пакет</legend>
+          <div class="opts" id="packOpts"></div>
+        </fieldset>
+        <label for="f-msg"><span data-i18n="o.msg">Коментар</span><textarea id="f-msg" name="msg" data-i18n-ph="o.msgPh" placeholder="Чи є у вас сайт зараз, що хочете змінити, приклади, які подобаються"></textarea></label>
+        <div class="hp" aria-hidden="true"><label for="f-web">Website<input id="f-web" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <p class="err" id="err" role="alert" hidden></p>
+        <button class="btn" type="submit" id="send" data-i18n="o.send">Надіслати заявку</button>
+        <p class="note" data-i18n="o.note">Без передоплати за чернетку. Ваші дані бачу тільки я.</p>
+      </form>
+      <div id="sent" aria-live="polite"></div>
+      <div class="direct" id="direct" hidden><span data-i18n="o.direct">Або напишіть одразу:</span><a class="btn ghost" id="tgLink" href="#" target="_blank" rel="noopener">Telegram</a></div>
+    </div>
+  </section>
+</main>
+
+<footer><div><span data-i18n="foot">Pavlo · веб-дизайнер · Рівне, Україна</span><a href="https://retr0-06.github.io/portfolio/" data-i18n="foot.port">Усі роботи →</a></div></footer>
+
+<script>
+/* ===== Settings: edit these ===== */
+window.SITE_CONFIG = {
+  // Google Apps Script /exec URL from tools/kit/apps-script.gs. Empty = demo mode, leads are not sent.
+  leadEndpoint: '',
+  // Your Telegram username without @, e.g. 'pavlo_web'. Empty = the Telegram button is hidden.
+  telegram: '',
+  packs: [
+    { id:'landing', uah:6000, gbp:249,
+      uk:{ name:'Лендинг', items:['Одна сторінка з послугами, цінами й контактами', 'Форма заявки в Telegram', 'Готово за 5 днів'] },
+      en:{ name:'Landing page', items:['One page with your services, prices and contacts', 'Enquiry form sent to your phone', 'Live in 5 days'] } },
+    { id:'tool', uah:9000, gbp:349, best:true,
+      uk:{ name:'Лендинг + інструмент', items:['Усе з пакета «Лендинг»', 'Калькулятор вартості, квіз або онлайн-запис', 'Таблиця всіх заявок'] },
+      en:{ name:'Landing + tool', items:['Everything in Landing page', 'Price calculator, quote quiz or booking form', 'Google Sheet with every enquiry'] } },
+    { id:'3d', uah:15000, gbp:590,
+      uk:{ name:'3D-сайт', items:['3D-сцена й анімації при прокрутці, як на цій сторінці', 'Для ресторанів, шоурумів, подій', 'Готово за 7–10 днів'] },
+      en:{ name:'3D website', items:['A 3D scene and scroll animations, like this page', 'For restaurants, showrooms and events', 'Live in 7–10 days'] } }
+  ]
+};
+/* ================================= */
+</script>
+<script src="../tools/kit/lead.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const CFG = window.SITE_CONFIG;
+const $ = id => document.getElementById(id);
+const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (CFG.leadEndpoint) window.LEADKIT_ENDPOINT = CFG.leadEndpoint;
+
+/* ---------- Language ---------- */
+const EN = {
+  'nav.label':'Sections', 'nav.how':'How I work', 'nav.price':'Prices', 'nav.work':'Work', 'nav.order':'Order a website',
+  'hero.eyebrow':'Web design for small businesses',
+  'hero.h1':'A website that brings you customers. Live in 5 days.',
+  'hero.lead':'I build one-page websites for cafés, salons, schools and local services: prices, photos, reviews and an enquiry form that lands straight on your phone.',
+  'hero.cta':'Order a website', 'hero.cta2':'See my work',
+  'trust.1':'Free first draft before you pay', 'trust.2':'30 days of free edits', 'trust.3':'Ukraine and the UK',
+  'how.eyebrow':'How I work', 'how.h2':'Five days from idea to a live website',
+  's1.day':'Day 1', 's1.b':'Free first draft', 's1.t':'I show you the homepage with your name, services and prices. You only pay if you like it.',
+  's2.day':'Days 2–4', 's2.b':'Building', 's2.t':'After a 50% deposit I write the copy, pick photos, and set up the enquiry form and mobile version.',
+  's3.day':'Day 5', 's3.b':'Launch', 's3.t':'I connect your domain and we send a test enquiry together. You pay the rest once it all works.',
+  'in.eyebrow':'What is inside', 'in.h2':'The three layers of your website',
+  'l1.b':'Design that fits your brand', 'l1.t':'Your colours, fonts and real photos of your place, not a template look.',
+  'l2.b':'Copy that sells', 'l2.t':'Plain words about what you do, what it costs and where to find you.',
+  'l3.b':'No lost enquiries', 'l3.t':'Every enquiry reaches your phone in a second and is saved to a Google Sheet.',
+  'in.hint':'Hover a layer to see it in the mock-up.',
+  'p.eyebrow':'Prices', 'p.h2':'Choose a package',
+  'p.note':'Every site is built for phones first, where most of your customers come from. Already have a website? <a href="https://retr0-06.github.io/portfolio/tools/">I can add a calculator, quiz or booking form</a> from £99.',
+  'w.eyebrow':'Work', 'w.h2':'Demo websites you can open', 'w.open':'Open →',
+  'w1.b':'KADR Cinema', 'w1.t':'3D hall, session and seat booking', 'w2.t':'Bakery with next-day pre-orders', 'w3.t':'Language school with a free trial lesson', 'w4.b':'Website tools', 'w4.t':'Calculator, quiz, online booking',
+  'w.note':'Demos show fictional businesses.',
+  'f.eyebrow':'Questions', 'f.h2':'What people usually ask',
+  'q1':'What do I need to prepare?', 'a1':'Your business name, a list of services with prices, a few photos and your contacts. No photos? I will find good stock ones and write the copy myself.',
+  'q2':'How much are the domain and hosting?', 'a2':'Hosting is free. A domain costs around £10–15 a year and is registered in your name, so the site is fully yours.',
+  'q3':'How does payment work?', 'a3':'50% once you approve the draft and 50% after launch, by bank transfer or PayPal.',
+  'q4':'Can I change things later?', 'a4':'For the first 30 days I update copy, prices and photos for free. After that, small edits by agreement.',
+  'q5':'I already have a site on Wix or Squarespace. What then?', 'a5':'No need to rebuild it. I can add a price calculator, quote quiz or booking form with one block of code: <a href="https://retr0-06.github.io/portfolio/tools/">see the tools</a>.',
+  'o.eyebrow':'Order', 'o.h2':'Tell me about your business', 'o.lead':'I will reply within a day with a free draft of your homepage.',
+  'o.name':'Name', 'o.contact':'How can I reach you', 'o.contactPh':'Phone, email or WhatsApp', 'o.biz':'Your business', 'o.bizPh':'For example: café in Manchester',
+  'o.pack':'Package', 'o.msg':'Comment', 'o.msgPh':'Do you have a website now, what would you like to change, sites you like',
+  'o.send':'Send enquiry', 'o.note':'No payment for the draft. Only I see your details.', 'o.direct':'Or message me directly:',
+  'o.unsure':'Not sure yet', 'o.unsureSub':'we will decide on a call',
+  'foot':'Pavlo · Web designer · Rivne, Ukraine', 'foot.port':'All work →'
+};
+const UK_EXTRA = { 'o.unsure':'Ще не знаю', 'o.unsureSub':'підкажу на дзвінку', 'nav.label':'Розділи' };
+const UK = {};
+document.querySelectorAll('[data-i18n]').forEach(el => { UK[el.dataset.i18n] = el.innerHTML; });
+document.querySelectorAll('[data-i18n-ph]').forEach(el => { UK[el.dataset.i18nPh] = el.placeholder; });
+Object.assign(UK, UK_EXTRA);
+const MSG = {
+  uk:{ need:"Вкажіть ім'я і контакт, щоб я міг вам відповісти.", sending:'Надсилаю…', sent:'Заявку надіслано', fail:'Не вдалося надіслати. Спробуйте ще раз або напишіть мені в Telegram.',
+       doneB:'Дякую! Заявку отримано.', doneT:'Напишу вам протягом дня з чернеткою головного екрана.', best:'Найчастіше', pick:'Обрати цей пакет →', from:'від', uah:'грн', ukNote:'для UK', title:'Pavlo · Замовити сайт' },
+  en:{ need:'Add your name and a way to reach you so I can reply.', sending:'Sending…', sent:'Enquiry sent', fail:'Could not send. Please try again or message me on Telegram.',
+       doneB:'Thank you! Your enquiry is in.', doneT:'I will reply within a day with a draft of your homepage.', best:'Most popular', pick:'Choose this package →', from:'from', uah:'UAH', ukNote:'', title:'Pavlo · Order a website' }
+};
+let lang = 'uk';
+try { const s = localStorage.getItem('pw-lang'); if (s === 'en' || s === 'uk') lang = s; } catch (e){}
+if (/(^|[?&])lang=en/.test(location.search) || location.hash === '#en') lang = 'en';
+if (/(^|[?&])lang=(uk|ua)/.test(location.search) || location.hash === '#ua') lang = 'uk';
+
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+function renderPacks(){
+  const m = MSG[lang], chosen = (document.querySelector('input[name="pack"]:checked') || {}).value || 'tool';
+  $('packList').innerHTML = '';
+  $('packOpts').innerHTML = '';
+  CFG.packs.forEach(p => {
+    const t = p[lang];
+    const art = document.createElement('article'); art.className = 'pack' + (p.best ? ' best' : '');
+    const h = document.createElement('h3'); h.textContent = t.name;
+    if (p.best){ const tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = m.best; h.append(tag); }
+    const pr = document.createElement('div'); pr.className = 'price';
+    if (lang === 'en'){ pr.textContent = `${m.from} £${p.gbp}`; }
+    else { pr.textContent = `${m.from} ${fmt(p.uah)} ${m.uah}`; const s = document.createElement('small'); s.textContent = `£${p.gbp} ${m.ukNote}`; pr.append(s); }
+    const ul = document.createElement('ul'); t.items.forEach(x => { const li = document.createElement('li'); li.textContent = x; ul.append(li); });
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'pick'; b.textContent = m.pick;
+    b.addEventListener('click', () => pickPack(p.id));
+    art.append(h, pr, ul, b); $('packList').append(art);
+
+    const lab = document.createElement('label'); lab.className = 'opt';
+    lab.innerHTML = `<input type="radio" name="pack" id="p-${p.id}"><span></span>`;
+    lab.querySelector('input').value = p.id;
+    lab.querySelector('span').innerHTML = '';
+    lab.querySelector('span').append(t.name, Object.assign(document.createElement('small'), { textContent: lang === 'en' ? `${m.from} £${p.gbp}` : `${m.from} ${fmt(p.uah)} ${m.uah}` }));
+    $('packOpts').append(lab);
+  });
+  const lab = document.createElement('label'); lab.className = 'opt';
+  lab.innerHTML = '<input type="radio" name="pack" id="p-unsure" value="unsure"><span></span>';
+  lab.querySelector('span').append((lang === 'en' ? EN : UK)['o.unsure'], Object.assign(document.createElement('small'), { textContent:(lang === 'en' ? EN : UK)['o.unsureSub'] }));
+  $('packOpts').append(lab);
+  const el = $('p-' + chosen) || $('p-tool'); if (el) el.checked = true;
+}
+function pickPack(id){
+  const el = $('p-' + id); if (el) el.checked = true;
+  $('order').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+  setTimeout(() => $('f-name').focus({ preventScroll:true }), reduce ? 0 : 800);
+}
+function applyLang(l){
+  lang = l;
+  const dict = l === 'en' ? EN : UK;
+  document.documentElement.lang = l === 'en' ? 'en' : 'uk';
+  document.querySelectorAll('[data-i18n]').forEach(el => { const v = dict[el.dataset.i18n]; if (v != null) el.innerHTML = v; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { const v = dict[el.dataset.i18nPh]; if (v != null) el.placeholder = v; });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => { const v = dict[el.dataset.i18nAria]; if (v != null) el.setAttribute('aria-label', v); });
+  $('l-uk').setAttribute('aria-pressed', l === 'uk'); $('l-en').setAttribute('aria-pressed', l === 'en');
+  document.title = MSG[l].title;
+  renderPacks();
+  try { localStorage.setItem('pw-lang', l); } catch (e){}
+}
+$('l-uk').addEventListener('click', () => applyLang('uk'));
+$('l-en').addEventListener('click', () => applyLang('en'));
+applyLang(lang);
+
+if (CFG.telegram){ $('direct').hidden = false; $('tgLink').href = 'https://t.me/' + CFG.telegram.replace(/^@/, ''); $('tgLink').textContent = 'Telegram @' + CFG.telegram.replace(/^@/, ''); }
+
+/* ---------- Form ---------- */
+function tgPreview(box, text){
+  const now = new Date(), t = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  const wrap = document.createElement('div'); wrap.className = 'tg'; wrap.setAttribute('role', 'status');
+  wrap.innerHTML = '<p></p><div class="bubble"><b>Заявки з сайту (бот)</b><span></span><time></time></div>';
+  wrap.querySelector('p').textContent = lang === 'en' ? 'Demo: this is how the enquiry arrives in Telegram. Nothing is sent yet.' : 'Демо: так заявка прийде в Telegram. Зараз вона нікуди не надсилається.';
+  wrap.querySelector('.bubble span').textContent = text;
+  wrap.querySelector('time').textContent = t;
+  box.append(wrap);
+}
+let celebrate = 0;
+$('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const m = MSG[lang], fd = new FormData(e.target);
+  if ((fd.get('website') || '').trim()) return; // bots fill the hidden field
+  const name = (fd.get('name') || '').trim(), contact = (fd.get('contact') || '').trim();
+  $('f-name').setAttribute('aria-invalid', !name); $('f-contact').setAttribute('aria-invalid', contact.length < 5);
+  if (!name || contact.length < 5){ $('err').textContent = m.need; $('err').hidden = false; (!name ? $('f-name') : $('f-contact')).focus(); return; }
+  $('err').hidden = true;
+  const packId = fd.get('pack');
+  const pack = CFG.packs.find(p => p.id === packId);
+  const fields = { "Ім'я": name, 'Контакт': contact, 'Бізнес': (fd.get('biz') || '').trim(), 'Пакет': pack ? pack.uk.name : UK['o.unsure'], 'Коментар': (fd.get('msg') || '').trim(), 'Мова': lang === 'en' ? 'EN' : 'UA' };
+  const btn = $('send'); btn.disabled = true; btn.textContent = m.sending;
+  const box = $('sent'); box.innerHTML = '';
+  try {
+    let demo = true;
+    if (window.LeadKit){ const r = await window.LeadKit.send('Замовлення сайту', fields, null); demo = !!(r && r.demo); }
+    const done = document.createElement('div'); done.className = 'done';
+    done.innerHTML = '<b></b><p></p>'; done.querySelector('b').textContent = m.doneB; done.querySelector('p').textContent = m.doneT;
+    box.append(done);
+    if (demo){
+      const lines = Object.entries(fields).filter(([, v]) => v).map(([k, v]) => k + ': ' + v);
+      tgPreview(box, '🔔 Нова заявка · Замовлення сайту\n' + lines.join('\n'));
+    }
+    btn.textContent = m.sent;
+    e.target.querySelectorAll('input,textarea').forEach(x => x.disabled = true);
+    celebrate = performance.now();
+  } catch (err){
+    $('err').textContent = m.fail; $('err').hidden = false; btn.disabled = false; btn.textContent = (lang === 'en' ? EN : UK)['o.send'];
+  }
+});
+
+/* ---------- Scroll progress ---------- */
+function progress(){ const h = document.documentElement.scrollHeight - innerHeight; $('progress').style.width = (h > 0 ? scrollY / h * 100 : 0) + '%'; }
+addEventListener('scroll', progress, { passive:true }); progress();
+
+/* ---------- 3D: a website assembling from blocks ---------- */
+if (!window.THREE) return;
+const T = THREE;
+const canvas = $('scene');
+let renderer;
+try { renderer = new T.WebGLRenderer({ canvas, antialias:true, alpha:true }); } catch (e){ return; }
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+const scene = new T.Scene();
+const camera = new T.PerspectiveCamera(35, 1, 0.1, 100);
+camera.position.set(0, 0, 15);
+scene.add(new T.HemisphereLight(0xffffff, 0x8a9a94, 0.95));
+const key = new T.DirectionalLight(0xffffff, 0.75); key.position.set(4, 6, 8); scene.add(key);
+const rim = new T.DirectionalLight(0xffffff, 0.3); rim.position.set(-6, -2, -4); scene.add(rim);
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const MATS = {};
+['page','ink','accent','pop','soft','soft2'].forEach(k => MATS[k] = new T.MeshStandardMaterial({ roughness:0.55, metalness:0.0, emissive:0x000000 }));
+const edgeMat = new T.LineBasicMaterial({ transparent:true, opacity:0.55 });
+const dustMat = new T.MeshStandardMaterial({ roughness:0.6, transparent:true, opacity:0.55 });
+function readColors(){
+  MATS.page.color.set(css('--card')); MATS.ink.color.set(css('--ink'));
+  MATS.accent.color.set(css('--accent')); MATS.pop.color.set(css('--pop'));
+  MATS.soft.color.set(css('--soft')); MATS.soft2.color.set(css('--soft2'));
+  edgeMat.color.set(css('--edge')); dustMat.color.set(css('--accent'));
+}
+
+// id, layer, desktop [x,y,w,h], mobile [x,y,w,h], material
+const BLOCKS = [
+  ['page',0,[0,0,4.2,6.4],[0,0,2.1,6.6],'page'],
+  ['nav',1,[0,2.85,3.8,0.3],[0,3.0,1.8,0.26],'ink'],
+  ['hero',1,[0,1.65,3.8,1.8],[0,2.0,1.8,1.4],'accent'],
+  ['h1a',2,[-0.5,2.0,2.4,0.26],[-0.15,2.35,1.3,0.2],'page'],
+  ['h1b',2,[-0.9,1.6,1.6,0.26],[-0.35,2.05,0.9,0.2],'page'],
+  ['cta',3,[-1.15,1.05,1.1,0.34],[-0.4,1.55,0.8,0.26],'pop'],
+  ['c1',1,[-1.3,-0.2,1.15,1.3],[0,0.85,1.8,0.55],'soft'],
+  ['c2',1,[0,-0.2,1.15,1.3],[0,0.2,1.8,0.55],'soft'],
+  ['c3',1,[1.3,-0.2,1.15,1.3],[0,-0.45,1.8,0.55],'soft'],
+  ['form',1,[0,-1.85,3.8,1.45],[0,-1.6,1.8,1.6],'soft2'],
+  ['in1',2,[-0.5,-1.45,2.4,0.24],[0,-1.05,1.5,0.22],'page'],
+  ['in2',2,[-0.5,-1.85,2.4,0.24],[0,-1.4,1.5,0.22],'page'],
+  ['send',3,[-1.2,-2.3,1.0,0.3],[-0.3,-1.85,0.85,0.26],'pop'],
+  ['foot',1,[0,-2.95,3.8,0.34],[0,-2.95,1.8,0.3],'ink']
+];
+const FLAT_Z = [0, 0.08, 0.15, 0.2], DEPTH = [0.08, 0.07, 0.05, 0.1];
+const LAYER_Z = [-1.5, 0, 1.15, 2.1];
+const HL_LAYERS = { design:[0, 1], text:[2], leads:[3] };
+const unit = new T.BoxGeometry(1, 1, 1), unitEdges = new T.EdgesGeometry(unit);
+const group = new T.Group(); scene.add(group);
+const rnd = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(7);
+
+const blocks = BLOCKS.map(([id, layer, d, m, matKey]) => {
+  const mesh = new T.Mesh(unit, MATS[matKey]);
+  mesh.add(new T.LineSegments(unitEdges, edgeMat));
+  group.add(mesh);
+  return {
+    id, layer, mesh, d, m, hl:0, delay:rnd() * 0.5,
+    chaos:{ p:new T.Vector3((rnd() - 0.5) * 9, (rnd() - 0.5) * 7, (rnd() - 0.6) * 5), r:new T.Euler(rnd() * 6, rnd() * 6, rnd() * 6), spin:new T.Vector3(rnd() - 0.5, rnd() - 0.5, rnd() - 0.5).multiplyScalar(0.5) }
+  };
+});
+
+const DUSTN = 46;
+const dust = new T.InstancedMesh(new T.BoxGeometry(0.12, 0.12, 0.12), dustMat, DUSTN);
+const dustSeed = Array.from({ length:DUSTN }, () => ({ p:new T.Vector3((rnd() - 0.5) * 16, (rnd() - 0.5) * 11, (rnd() - 0.8) * 8), s:0.4 + rnd() * 1.2, ph:rnd() * 6.3 }));
+scene.add(dust);
+readColors();
+const mq = matchMedia('(prefers-color-scheme: dark)');
+(mq.addEventListener ? mq.addEventListener('change', readColors) : mq.addListener(readColors));
+new MutationObserver(readColors).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme', 'style', 'class'] });
+
+// layer highlight from the "What is inside" list
+let hlKey = null;
+document.querySelectorAll('.layer').forEach(btn => {
+  const on = () => { hlKey = btn.dataset.layer; document.querySelectorAll('.layer').forEach(x => x.setAttribute('aria-pressed', x === btn)); };
+  const off = () => { if (btn.getAttribute('aria-pressed') === 'true' && !btn.dataset.sticky){ hlKey = null; btn.setAttribute('aria-pressed', 'false'); } };
+  btn.addEventListener('mouseenter', on); btn.addEventListener('focus', on);
+  btn.addEventListener('mouseleave', off); btn.addEventListener('blur', off);
+  btn.addEventListener('click', () => {
+    const was = btn.dataset.sticky;
+    document.querySelectorAll('.layer').forEach(x => { delete x.dataset.sticky; x.setAttribute('aria-pressed', 'false'); });
+    if (was){ hlKey = null; } else { btn.dataset.sticky = '1'; on(); }
+  });
+});
+
+const tmpE = new T.Euler();
+function stateOf(idx, b, t){
+  const box = idx === 3 ? b.m : b.d;
+  const z = idx === 2 ? LAYER_Z[b.layer] : FLAT_Z[b.layer];
+  const out = { p:new T.Vector3(box[0], box[1], z), q:new T.Quaternion(), s:new T.Vector3(box[2], box[3], DEPTH[b.layer]) };
+  if (idx === 0){
+    const c = b.chaos, k = reduce ? 0 : t;
+    out.p.copy(c.p); out.p.y += reduce ? 0 : Math.sin(t * 0.6 + c.r.x) * 0.25;
+    tmpE.set(c.r.x + c.spin.x * k, c.r.y + c.spin.y * k, c.r.z + c.spin.z * k);
+    out.q.setFromEuler(tmpE);
+    out.s.set(b.d[2] * 0.8, b.d[3] * 0.8, Math.max(0.12, DEPTH[b.layer] * 2));
+  }
+  if (idx === 4 && b.id === 'send'){
+    const pulse = 1 + (reduce ? 0 : Math.sin(t * 3) * 0.06) + (celebrate ? Math.max(0, 1 - (performance.now() - celebrate) / 1200) * 0.6 : 0);
+    out.p.z = 1.3; out.s.multiplyScalar(1.35 * pulse);
+  }
+  return out;
+}
+const GROUP = [
+  { r:[0, 0, 0], s:1 },
+  { r:[-0.08, -0.38, 0], s:1 },
+  { r:[-0.42, -0.85, 0], s:0.92 },
+  { r:[-0.04, 0.42, 0], s:1.05 },
+  { r:[-0.1, -0.22, 0], s:0.9 }
+];
+
+const sections = [...document.querySelectorAll('.sec')];
+let anchors = [];
+function measure(){ anchors = sections.map(s => ({ top:s.offsetTop, st:+s.dataset.state })); }
+function stateFromScroll(){
+  const y = window.scrollY + innerHeight * 0.45;
+  if (y <= anchors[0].top + 1) return 0;
+  for (let i = 0; i < anchors.length - 1; i++){
+    const a = anchors[i], b = anchors[i + 1];
+    if (y < b.top){
+      const k = Math.min(1, Math.max(0, (y - a.top - (b.top - a.top) * 0.35) / ((b.top - a.top) * 0.65)));
+      return a.st + (b.st - a.st) * k;
+    }
+  }
+  return anchors[anchors.length - 1].st;
+}
+
+let mobile = false;
+function resize(){
+  const w = innerWidth, h = innerHeight;
+  mobile = w <= 900;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  if (mobile){ camera.clearViewOffset(); camera.position.z = w / h < 0.7 ? 19 : 16; }
+  else { camera.setViewOffset(w, h, -w * 0.22, 0, w, h); camera.position.z = 15; }
+  camera.updateProjectionMatrix();
+  measure();
+}
+addEventListener('resize', resize); resize();
+addEventListener('load', measure);
+new ResizeObserver(measure).observe(document.body);
+
+let px = 0, py = 0, tx = 0, ty = 0;
+addEventListener('pointermove', e => { tx = e.clientX / innerWidth - 0.5; ty = e.clientY / innerHeight - 0.5; }, { passive:true });
+
+let cur = 0, start = performance.now();
+const ease = k => k * k * (3 - 2 * k);
+const d4 = new T.Object3D();
+const tmpV = new T.Vector3();
+function frame(now){
+  const t = now / 1000;
+  const intro = reduce ? 1 : Math.min(1, (now - start) / 1800);
+  const target = stateFromScroll();
+  cur += (target - cur) * (reduce ? 1 : 0.08);
+  const i = Math.min(3, Math.floor(cur)), k = ease(Math.min(1, cur - i));
+  const hlSet = hlKey ? HL_LAYERS[hlKey] : null;
+  blocks.forEach(b => {
+    const A = stateOf(i, b, t), B = stateOf(i + 1, b, t);
+    b.mesh.position.lerpVectors(A.p, B.p, k);
+    b.mesh.quaternion.copy(A.q).slerp(B.q, k);
+    b.mesh.scale.lerpVectors(A.s, B.s, k);
+    // layer highlight: lift the chosen layer, shrink the rest a little
+    const goal = hlSet ? (hlSet.includes(b.layer) ? 1 : -1) : 0;
+    b.hl += (goal - b.hl) * 0.12;
+    if (b.hl > 0){ b.mesh.position.z += b.hl * 0.9; b.mesh.scale.multiplyScalar(1 + b.hl * 0.06); }
+    else if (b.hl < 0){ b.mesh.scale.multiplyScalar(1 + b.hl * 0.12); }
+    // intro: blocks fly in from deep space on first load
+    const e = ease(Math.min(1, Math.max(0, (intro - b.delay * 0.6) / 0.7)));
+    if (e < 1){ b.mesh.position.z -= (1 - e) * 22; b.mesh.scale.multiplyScalar(0.3 + 0.7 * e); }
+  });
+  const G0 = GROUP[i], G1 = GROUP[i + 1];
+  px += (tx - px) * 0.05; py += (ty - py) * 0.05;
+  const idle = reduce ? 0 : Math.sin(t * 0.4) * 0.04;
+  group.rotation.set(G0.r[0] + (G1.r[0] - G0.r[0]) * k + py * 0.25, G0.r[1] + (G1.r[1] - G0.r[1]) * k + px * 0.35 + idle, 0);
+  group.scale.setScalar((G0.s + (G1.s - G0.s) * k) * (mobile ? 0.95 : 1));
+  group.position.y = mobile ? 0.6 : 0;
+
+  for (let n = 0; n < DUSTN; n++){
+    const s = dustSeed[n], m = reduce ? 0 : 1;
+    d4.position.set(s.p.x + Math.sin(t * 0.2 * s.s + s.ph) * 0.6 * m, s.p.y + Math.sin(t * 0.3 * s.s + s.ph) * 0.8 * m, s.p.z);
+    d4.rotation.set(t * 0.3 * s.s * m + s.ph, t * 0.2 * m + s.ph, 0);
+    d4.scale.setScalar(s.s * intro);
+    d4.updateMatrix(); dust.setMatrixAt(n, d4.matrix);
+  }
+  dust.instanceMatrix.needsUpdate = true;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
