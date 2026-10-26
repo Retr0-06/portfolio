@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Склад «Північ» · концепт лендингу</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: B2B warehouse — temperature zones as the hero instrument, lead form always one tap away */
+:root{
+  --bg:#F4F6F8; --card:#FFFFFF; --ink:#141C24; --muted:#56616E;
+  --cold:#1F6FB2; --cold-soft:#E3EEF8; --dry:#B7791F; --dry-soft:#F7EEDD; --line:#DCE2E8; --ok:#1E7F4F;
+  --body:"Golos Text", system-ui, sans-serif; --mono:"JetBrains Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0F151B; --card:#17202A; --ink:#E6ECF2; --muted:#9AA7B4;
+  --cold:#6FB0EC; --cold-soft:#15283A; --dry:#E0A955; --dry-soft:#2B2416; --line:#26313D; --ok:#5CCB91; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:12px;flex-wrap:wrap}
+.logo{font-weight:800;letter-spacing:.02em}
+.logo span{color:var(--cold)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:10px;padding:11px 18px;font:600 .95rem var(--body);text-decoration:none;cursor:pointer;border:1px solid transparent}
+.btn.main{background:var(--cold);color:#fff}
+.btn.ghost{border-color:var(--line);color:var(--ink);background:transparent}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--dry);outline-offset:2px}
+.hero{padding-block:48px 40px;display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center}
+.eyebrow{font:500 .8rem var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.hero h1{font-size:clamp(1.9rem,5vw,3rem);line-height:1.1;margin:10px 0 16px;text-wrap:balance;font-weight:800}
+.hero p{color:var(--muted);font-size:1.1rem;max-width:46ch;margin:0 0 24px}
+.zones{display:grid;gap:12px}
+.zone{border-radius:16px;padding:18px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:center}
+.zone.c{background:var(--cold-soft)} .zone.d{background:var(--dry-soft)}
+.zone b{font:500 2rem var(--mono);grid-row:span 2}
+.zone.c b{color:var(--cold)} .zone.d b{color:var(--dry)}
+.zone strong{font-weight:700}
+.zone span{color:var(--muted);font-size:.92rem}
+section h2{font-size:clamp(1.4rem,3.5vw,2rem);margin:0 0 20px;font-weight:800}
+.band .wrap{padding-block:44px}
+.svc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.svc div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.svc h3{margin:0 0 6px;font-size:1.05rem}
+.svc p{margin:0;color:var(--muted)}
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.trust div{border-left:3px solid var(--cold);padding-left:12px}
+.trust b{display:block;font:500 1.6rem var(--mono)}
+.trust span{color:var(--muted);font-size:.9rem}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;counter-reset:s}
+.steps div{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.steps div::before{content:counter(s);font:500 .85rem var(--mono);color:var(--cold);display:block;margin-bottom:6px}
+.lead{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;gap:14px;max-width:640px}
+.lead label{display:grid;gap:6px;font-weight:600}
+.lead input,.lead select,.lead textarea{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.done{margin:0;color:var(--ok);font-weight:700}
+.note{color:var(--muted);font-size:.85rem;margin:0}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+footer .wrap{padding-block:22px}
+@media (max-width:760px){.hero,.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo">СКЛАД<span>·</span>ПІВНІЧ</div>
+  <div class="acts">
+    <a class="btn ghost" href="#lead">Telegram</a>
+    <a class="btn ghost" href="#lead">+380 44 000 00 00</a>
+    <a class="btn main" href="#lead">Розрахувати вартість</a>
+  </div>
+</div></header>
+
+<main>
+<section class="wrap hero">
+  <div>
+    <div class="eyebrow">3PL для виробників продуктів · Київ і область</div>
+    <h1>Зберігаємо, комплектуємо й доставляємо ваш товар у мережі</h1>
+    <p>Холодні й сухі зони, крос-докінг і комплектація замовлень під вимоги рітейлу. Ви виробляєте, ми робимо решту.</p>
+    <a class="btn main" href="#lead">Отримати розрахунок за 1 годину</a>
+  </div>
+  <div class="zones">
+    <div class="zone c"><b>0…+4°</b><strong>Холодна зона</strong><span>Молочка, м'ясо, кулінарія. Постійний контроль температури.</span></div>
+    <div class="zone d"><b>+15…+25°</b><strong>Суха зона</strong><span>Бакалія, напої, кондитерка. Палетне й штучне зберігання.</span></div>
+  </div>
+</section>
+
+<section class="band"><div class="wrap">
+  <h2>Послуги</h2>
+  <div class="svc">
+    <div><h3>Відповідальне зберігання</h3><p>Палетні місця в холодній і сухій зонах, облік у WMS.</p></div>
+    <div><h3>Крос-докінг</h3><p>Прийом і відвантаження в той самий день, без розміщення на складі.</p></div>
+    <div><h3>Комплектація замовлень</h3><p>Збір під вимоги мереж: маркування, палетування, документи.</p></div>
+    <div><h3>Доставка в мережі</h3><p>Рефрижератори по Києву та області, доставка у слоти РЦ.</p></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2>Чому нам довіряють</h2>
+  <div class="trust">
+    <div><b>24/7</b><span>моніторинг температури</span></div>
+    <div><b>99,5%</b><span>замовлень без розбіжностей</span></div>
+    <div><b>1 год</b><span>на розрахунок вартості</span></div>
+    <div><b>0 грн</b><span>за підключення</span></div>
+  </div>
+  <p class="note" style="margin-top:14px">Цифри в концепті умовні, у фінальній версії будуть ваші.</p>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2>Як почати</h2>
+  <div class="steps">
+    <div>Залишаєте заявку з обсягами й асортиментом</div>
+    <div>Менеджер рахує вартість протягом години</div>
+    <div>Підписуємо договір і приймаємо першу партію</div>
+  </div>
+</div></section>
+
+<section class="band" id="lead"><div class="wrap">
+  <h2>Розрахунок вартості</h2>
+  <form class="lead" id="form">
+    <div class="row">
+      <label for="co">Компанія<input id="co" required placeholder="ТОВ «Молочний край»"></label>
+      <label for="ph">Телефон<input id="ph" type="tel" required placeholder="+380"></label>
+    </div>
+    <div class="row">
+      <label for="zone">Зона<select id="zone"><option>Холодна 0…+4°</option><option>Суха</option><option>Обидві</option></select></label>
+      <label for="vol">Палет на місяць<select id="vol"><option>до 50</option><option>50–200</option><option>200+</option></select></label>
+    </div>
+    <label for="msg">Що потрібно<textarea id="msg" rows="3" placeholder="Зберігання + доставка в АТБ і Сільпо"></textarea></label>
+    <button class="btn main" type="submit">Отримати розрахунок</button>
+    <p class="done" id="done" hidden>Заявку надіслано. Менеджер зв'яжеться протягом години.</p>
+    <p class="note">У робочій версії заявка йде на email і в Telegram, а відправка форми й кліки по кнопках фіксуються як цілі GA4 через GTM.</p>
+  </form>
+</div></section>
+</main>
+
+<footer><div class="wrap">Концепт лендингу для B2B-складу. Дизайн і розробка: Павло, Рівне · retr0-06.github.io/portfolio</div></footer>
+<script>
+document.getElementById('form').addEventListener('submit',e=>{e.preventDefault();document.getElementById('done').hidden=false;});
+</script>
+</body>
+</html>
